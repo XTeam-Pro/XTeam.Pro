@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { Search, Eye, Trash2, Download, CheckCircle, Clock, AlertCircle, XCircle } from 'lucide-react';
 import { useAdminStore } from '@/store/adminStore';
-import { apiCall } from '@/utils/api';
+import { adminApiCall } from '@/utils/adminApi';
 
 interface AuditRow {
   audit_id: string;
@@ -28,7 +28,7 @@ const STATUS_CONFIG = {
 };
 
 export default function AdminAudits() {
-  const { authToken } = useAdminStore();
+  const authToken = useAdminStore(state => state.authToken);
   const navigate = useNavigate();
   const [audits, setAudits] = useState<AuditRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -42,9 +42,7 @@ export default function AdminAudits() {
       const params = new URLSearchParams();
       if (statusFilter !== 'all') params.set('status_filter', statusFilter);
       if (search) params.set('search', search);
-      const res = await apiCall(`/api/admin/audits?${params}`, {
-        headers: { Authorization: `Bearer ${authToken}` },
-      });
+      const res = await adminApiCall(`/api/admin/audits?${params}`, authToken);
       const data = await res.json();
       setAudits(Array.isArray(data) ? data : data.items ?? []);
     } catch {
@@ -59,9 +57,8 @@ export default function AdminAudits() {
   const handleDelete = async (id: string) => {
     if (!confirm('Удалить аудит? Это действие необратимо.')) return;
     try {
-      await apiCall(`/api/admin/submissions/${id}`, {
+      await adminApiCall(`/api/admin/submissions/${id}`, authToken, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${authToken}` },
       });
       toast.success('Аудит удалён');
       setAudits(prev => prev.filter(a => a.audit_id !== id));
@@ -72,9 +69,7 @@ export default function AdminAudits() {
 
   const handleExport = async () => {
     try {
-      const res = await apiCall('/api/admin/export?format=csv', {
-        headers: { Authorization: `Bearer ${authToken}` },
-      });
+      const res = await adminApiCall('/api/admin/export?format=csv', authToken);
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');

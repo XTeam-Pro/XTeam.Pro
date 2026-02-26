@@ -18,7 +18,11 @@ const NAV_ITEMS = [
 ];
 
 export default function AdminSidebar() {
-  const { sidebarCollapsed, toggleSidebar, adminUser, logout, hasPermission } = useAdminStore();
+  const sidebarCollapsed = useAdminStore(state => state.sidebarCollapsed);
+  const toggleSidebar = useAdminStore(state => state.toggleSidebar);
+  const adminUser = useAdminStore(state => state.adminUser);
+  const logout = useAdminStore(state => state.logout);
+  const hasPermission = useAdminStore(state => state.hasPermission);
   const navigate = useNavigate();
 
   const handleLogout = () => {

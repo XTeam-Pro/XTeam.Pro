@@ -10,7 +10,7 @@ import {
   ArrowUpRight, ArrowDownRight, Activity, Clock, CheckCircle,
 } from 'lucide-react';
 import { useAdminStore } from '@/store/adminStore';
-import { apiCall } from '@/utils/api';
+import { adminApiCall } from '@/utils/adminApi';
 
 interface DashboardStats {
   total_audits: number;
@@ -106,7 +106,7 @@ const renderCustomPieLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, perc
 };
 
 export default function AdminDashboard() {
-  const { authToken } = useAdminStore();
+  const authToken = useAdminStore(state => state.authToken);
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -116,8 +116,8 @@ export default function AdminDashboard() {
     const load = async () => {
       try {
         const [dashRes, analyticsRes] = await Promise.all([
-          apiCall('/api/admin/dashboard', { headers: { Authorization: `Bearer ${authToken}` } }),
-          apiCall('/api/admin/analytics', { headers: { Authorization: `Bearer ${authToken}` } }),
+          adminApiCall('/api/admin/dashboard', authToken),
+          adminApiCall('/api/admin/analytics', authToken),
         ]);
         setStats(await dashRes.json());
         setAnalytics(await analyticsRes.json());

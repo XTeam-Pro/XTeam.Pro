@@ -4,6 +4,7 @@ import { ArrowLeft, Save, Eye, Globe, FileText } from 'lucide-react';
 import { useAdminStore } from '@/store/adminStore';
 import BlogEditor from '@/components/admin/BlogEditor';
 import MediaPickerModal from '@/components/admin/MediaPickerModal';
+import { adminApiJson } from '@/utils/adminApi';
 
 interface BlogPostFull {
   id?: number;
@@ -26,6 +27,8 @@ interface BlogPostFull {
   allow_comments: boolean;
   is_seo_optimized: boolean;
 }
+
+type BlogPostApiResponse = Partial<BlogPostFull> & { id?: number };
 
 const EMPTY_POST: BlogPostFull = {
   title: '',
@@ -97,7 +100,7 @@ function Textarea(props: TextareaProps) {
 export default function AdminBlogEditor() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { authToken } = useAdminStore();
+  const authToken = useAdminStore(state => state.authToken);
 
   const isNew = !id || id === 'new';
 
@@ -126,11 +129,7 @@ export default function AdminBlogEditor() {
     (async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/admin/blog/${id}`, {
-          headers: { Authorization: `Bearer ${authToken}` },
-        });
-        if (!res.ok) throw new Error('Post not found');
-        const data = await res.json();
+        const data = await adminApiJson<BlogPostApiResponse>(`/api/admin/blog/${id}`, authToken);
         setPost({
           id: data.id,
           title: data.title ?? '',
@@ -188,16 +187,10 @@ export default function AdminBlogEditor() {
     try {
       const url = isNew ? '/api/admin/blog' : `/api/admin/blog/${id}`;
       const method = isNew ? 'POST' : 'PUT';
-      const res = await fetch(url, {
+      const data = await adminApiJson<{ id?: number }>(url, authToken, {
         method,
-        headers: { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.detail ?? 'Save failed');
-      }
-      const data = await res.json();
       if (isNew && data.id) {
         navigate(`/admin/blog/${data.id}/edit`, { replace: true });
       }

@@ -969,7 +969,143 @@
         "metricLabel": "ROI return on investment across HRXteam cases",
         "caseRef": "Discuss HR challenge",
         "cta": "Discuss HR automation"
+      },
+      "sales": {
+        "pain": "Leads get lost, quotes take too long",
+        "title": "Sales & Revenue Automation",
+        "forWhom": "CEO / CCO / Head of Sales",
+        "description": "Personalized proposals generated automatically, CRM enrichment from open sources, deal scoring, and follow-up sequences — so your team focuses on closing, not paperwork.",
+        "benefits": [
+          "Auto-generated RFP/proposal drafts in minutes",
+          "Lead enrichment and scoring without manual research",
+          "5–15% revenue uplift from personalization (McKinsey)",
+          "50% lower CAC through targeted outreach"
+        ],
+        "metric": "+5–15%",
+        "metricLabel": "revenue growth · McKinsey personalization research",
+        "caseRef": "View case: conversion growth",
+        "cta": "Discuss sales automation"
+      },
+      "idp": {
+        "pain": "Manual data entry from PDFs costs $6–8 per document",
+        "title": "Intelligent Document Processing",
+        "forWhom": "CFO / Head of Back-Office / COO",
+        "description": "Extract structured data from invoices, contracts, and forms — validate it, reconcile against master data, and write directly to ERP/CRM/ECM — with exception alerts for edge cases.",
+        "benefits": [
+          "Extract data from PDFs, scans, and emails automatically",
+          "Validation against reference data and business rules",
+          "Direct ERP/CRM write-back — no rekeying",
+          "Exception queue for human review — no black boxes"
+        ],
+        "metric": "−70%",
+        "metricLabel": "document processing time — industry benchmark",
+        "caseRef": "View case: document automation",
+        "cta": "Discuss document workflows"
+      },
+      "finance": {
+        "pain": "Month-end close takes 2+ weeks of manual reconciliation",
+        "title": "Finance: Procure-to-Pay & Period Close",
+        "forWhom": "CFO / Finance Director",
+        "description": "Automate invoice matching, approval routing, and period-close activities — cut labor-intensive finance tasks and reduce the risk of errors at reconciliation time.",
+        "benefits": [
+          "3-way invoice matching without manual effort",
+          "Approval workflows with SLA tracking",
+          "Accelerated period-close — fewer late nights",
+          "Audit-ready transaction logs"
+        ],
+        "metric": "330%",
+        "metricLabel": "ROI over 3 years — Forrester TEI (commissioned composite)",
+        "caseRef": "Request ROI model",
+        "cta": "Discuss CFO challenge"
+      },
+      "aiops": {
+        "pain": "Incidents take hours to resolve, alert fatigue is real",
+        "title": "IT Operations & AIOps",
+        "forWhom": "CTO / CIO / Head of Ops",
+        "description": "Correlate events across your monitoring stack, auto-triage alerts by priority, trigger remediation scripts, and track SLA compliance — without drowning your team in noise.",
+        "benefits": [
+          "Cross-tool event correlation — single incident view",
+          "Auto-triage: routing to the right team in seconds",
+          "Automated remediation for known failure patterns",
+          "Transparent SLA dashboards for leadership"
+        ],
+        "metric": "−40%",
+        "metricLabel": "MTTR reduction with AIOps — IBM benchmark",
+        "caseRef": "View ITSM case",
+        "cta": "Discuss IT operations pilot"
+      },
+      "devai": {
+        "pain": "Developer shortage, slow releases, manual testing",
+        "title": "AI-Accelerated Development (SDLC)",
+        "forWhom": "CTO / Head of Engineering",
+        "description": "Embed AI assistants into code review, test generation, refactoring, and documentation — so your existing team ships faster without growing headcount.",
+        "benefits": [
+          "55% faster task completion with AI coding assistant (GitHub study)",
+          "Automated test generation — fewer regressions",
+          "AI-assisted refactoring and tech debt reduction",
+          "Auto-generated documentation and changelogs"
+        ],
+        "metric": "+55%",
+        "metricLabel": "task speed — controlled GitHub Copilot experiment",
+        "caseRef": "View engineering case",
+        "cta": "Discuss dev acceleration"
+      },
+      "aigovernance": {
+        "pain": "Employees use uncontrolled AI tools — data leaks, hallucinations in critical workflows",
+        "title": "AI Security & Governance",
+        "forWhom": "CISO / CTO / Legal / Risk",
+        "description": "Define AI usage policies, create safe data perimeters, enforce audit logging, and build human-in-the-loop checkpoints — so you capture AI value without regulatory or reputational risk.",
+        "benefits": [
+          "Shadow AI inventory and policy enforcement",
+          "Data classification and perimeter controls",
+          "Full audit trail of AI-generated outputs",
+          "Human review gates for high-stakes decisions"
+        ],
+        "metric": "40%",
+        "metricLabel": "of orgs face shadow AI breach by 2030 — Gartner",
+        "caseRef": "View governance approach",
+        "cta": "Discuss secure AI implementation"
       }
+    },
+    "filter": {
+      "all": "All Solutions",
+      "client_ops": "Client Operations",
+      "docs": "Docs & Back-Office",
+      "data": "Data & Knowledge",
+      "people": "People & HR",
+      "it_risk": "IT & Risk"
+    },
+    "tracks": {
+      "client_ops": {
+        "title": "Client Operations",
+        "subtitle": "Customer support, sales and revenue process automation"
+      },
+      "docs": {
+        "title": "Docs & Back-Office",
+        "subtitle": "Document processing, finance and back-office workflows"
+      },
+      "data": {
+        "title": "Data & Knowledge",
+        "subtitle": "Analytics, data quality and corporate knowledge management"
+      },
+      "people": {
+        "title": "People & HR",
+        "subtitle": "Recruiting, onboarding and skills development automation"
+      },
+      "it_risk": {
+        "title": "IT & Risk",
+        "subtitle": "IT operations, dev acceleration and AI governance"
+      }
+    },
+    "trust": {
+      "title": "How we run pilots",
+      "subtitle": "We measure from the baseline, deliver in 2–8 weeks, document results, and keep humans in control of critical decisions.",
+      "items": [
+        { "title": "Baseline KPI", "text": "We fix the starting metric before day one — no baseline, no valid result" },
+        { "title": "Pilot 2–8 weeks", "text": "Focused scope with measurable outcome. No vendor lock-in." },
+        { "title": "Before/after report", "text": "Documented business impact — ready for internal stakeholder sign-off" },
+        { "title": "Human-in-the-loop", "text": "Logging, access control, and exception handling built in from the start" }
+      ]
     },
     "industryStories": {
       "title": "Where We Apply",
@@ -1140,7 +1276,7 @@
       "subtitle": "We start with discovery to understand your goals, constraints and KPIs — then propose a pilot scope.",
       "auditButton": "Request a pilot",
       "consultationButton": "Book a discovery call",
-      "casesButton": "View solutions"
+      "casesButton": "View case studies"
     },
     "title": "Products & Solutions",
     "subtitle": "Applied AI at the intersection of technology and real business",

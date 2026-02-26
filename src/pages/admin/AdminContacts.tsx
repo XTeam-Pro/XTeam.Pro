@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { Search, Eye, Download, Trash2 } from 'lucide-react';
 import { useAdminStore } from '@/store/adminStore';
-import { apiCall } from '@/utils/api';
+import { adminApiCall } from '@/utils/adminApi';
 
 interface ContactRow {
   inquiry_id: string;
@@ -43,7 +43,7 @@ const PRIORITY_LABELS: Record<string, string> = {
 };
 
 export default function AdminContacts() {
-  const { authToken } = useAdminStore();
+  const authToken = useAdminStore(state => state.authToken);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [contacts, setContacts] = useState<ContactRow[]>([]);
@@ -64,9 +64,7 @@ export default function AdminContacts() {
       if (inquiryTypeFilter !== 'all') params.set('inquiry_type_filter', inquiryTypeFilter);
       if (dateFrom) params.set('date_from', dateFrom);
       if (dateTo) params.set('date_to', dateTo);
-      const res = await apiCall(`/api/admin/contacts?${params}`, {
-        headers: { Authorization: `Bearer ${authToken}` },
-      });
+      const res = await adminApiCall(`/api/admin/contacts?${params}`, authToken);
       const data = await res.json();
       setContacts(Array.isArray(data) ? data : data.items ?? []);
     } catch {
@@ -80,9 +78,7 @@ export default function AdminContacts() {
 
   const handleExportContacts = async () => {
     try {
-      const res = await apiCall('/api/admin/export/contacts', {
-        headers: { Authorization: `Bearer ${authToken}` },
-      });
+      const res = await adminApiCall('/api/admin/export/contacts', authToken);
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -97,9 +93,8 @@ export default function AdminContacts() {
   const handleDelete = async (id: string) => {
     if (!confirm('Удалить это обращение? Действие необратимо.')) return;
     try {
-      await apiCall(`/api/admin/contacts/${id}`, {
+      await adminApiCall(`/api/admin/contacts/${id}`, authToken, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${authToken}` },
       });
       toast.success('Обращение удалено');
       setContacts(prev => prev.filter(c => c.inquiry_id !== id));

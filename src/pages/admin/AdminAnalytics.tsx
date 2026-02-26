@@ -9,7 +9,7 @@ import {
   DollarSign, Users, CheckCircle, ExternalLink,
 } from 'lucide-react';
 import { useAdminStore } from '@/store/adminStore';
-import { apiCall } from '@/utils/api';
+import { adminApiCall } from '@/utils/adminApi';
 import { toast } from 'sonner';
 
 type Period = '7d' | '30d' | '90d' | '365d';
@@ -94,7 +94,7 @@ const KpiCard = ({ label, value, icon: Icon, iconBg, trend, trendLabel }: KpiCar
 const MAX_BAR = 100; // for relative bar chart in posts table
 
 export default function AdminAnalytics() {
-  const { authToken } = useAdminStore();
+  const authToken = useAdminStore(state => state.authToken);
   const [period, setPeriod] = useState<Period>('30d');
   const [data, setData] = useState<Analytics | null>(null);
   const [topPosts, setTopPosts] = useState<BlogPost[]>([]);
@@ -105,8 +105,8 @@ export default function AdminAnalytics() {
     setLoading(true);
     try {
       const [analyticsRes, blogRes] = await Promise.all([
-        apiCall(`/api/admin/analytics?period=${period}`, { headers: { Authorization: `Bearer ${authToken}` } }),
-        apiCall('/api/admin/analytics/blog', { headers: { Authorization: `Bearer ${authToken}` } }),
+        adminApiCall(`/api/admin/analytics?period=${period}`, authToken),
+        adminApiCall('/api/admin/analytics/blog', authToken),
       ]);
       setData(await analyticsRes.json());
       const blogData = await blogRes.json();

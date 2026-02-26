@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Mail, Phone, Building, User, Calendar, Tag, AlertCircle, Trash2 } from 'lucide-react';
+import { ArrowLeft, Mail, Phone, Building, User, AlertCircle, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { apiCall } from '@/utils/api';
 import { useAdminStore } from '@/store/adminStore';
+import { adminApiCall, adminApiJson } from '@/utils/adminApi';
 
 interface ContactDetail {
   id: number;
@@ -61,7 +61,7 @@ function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
 export default function AdminContactDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { authToken } = useAdminStore();
+  const authToken = useAdminStore(state => state.authToken);
 
   const [contact, setContact] = useState<ContactDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -76,11 +76,7 @@ export default function AdminContactDetail() {
     (async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/admin/contacts/${id}`, {
-          headers: { Authorization: `Bearer ${authToken}` },
-        });
-        if (!res.ok) throw new Error();
-        const data: ContactDetail = await res.json();
+        const data = await adminApiJson<ContactDetail>(`/api/admin/contacts/${id}`, authToken);
         setContact(data);
         setStatus(data.status);
         setPriority(data.priority);
@@ -96,9 +92,8 @@ export default function AdminContactDetail() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      await fetch(`/api/admin/contacts/${id}`, {
+      await adminApiCall(`/api/admin/contacts/${id}`, authToken, {
         method: 'PATCH',
-        headers: { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           status,
           priority,
@@ -115,9 +110,8 @@ export default function AdminContactDetail() {
     if (!contact || !confirm(`Удалить обращение от ${contact.name}? Это действие необратимо.`)) return;
     setDeleting(true);
     try {
-      await apiCall(`/api/admin/contacts/${id}`, {
+      await adminApiCall(`/api/admin/contacts/${id}`, authToken, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${authToken}` },
       });
       toast.success('Обращение удалено');
       navigate('/admin/contacts');
@@ -130,9 +124,8 @@ export default function AdminContactDetail() {
 
   const handleMarkSpam = async () => {
     if (!contact || !confirm('Mark as spam?')) return;
-    await fetch(`/api/admin/contacts/${id}`, {
+    await adminApiCall(`/api/admin/contacts/${id}`, authToken, {
       method: 'PATCH',
-      headers: { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ is_spam: true }),
     });
     setContact(prev => prev ? { ...prev, is_spam: true } : prev);

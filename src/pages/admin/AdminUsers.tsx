@@ -1,8 +1,9 @@
 import { useEffect, useState, useCallback } from 'react';
 import {
-  UserPlus, Edit2, Trash2, Lock, Unlock, Key, Shield, RefreshCw, X, Check,
+  UserPlus, Edit2, Trash2, Lock, Unlock, Key, RefreshCw, X, Check,
 } from 'lucide-react';
 import { useAdminStore } from '@/store/adminStore';
+import { adminApiCall, adminApiJson } from '@/utils/adminApi';
 
 interface AdminUserItem {
   id: number;
@@ -55,7 +56,8 @@ function Modal({ onClose, children, title }: ModalProps) {
 }
 
 export default function AdminUsers() {
-  const { authToken, adminUser: me } = useAdminStore();
+  const authToken = useAdminStore(state => state.authToken);
+  const me = useAdminStore(state => state.adminUser);
   const isSuperAdmin = me?.role === 'super_admin';
 
   const [users, setUsers] = useState<AdminUserItem[]>([]);
@@ -69,11 +71,7 @@ export default function AdminUsers() {
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/admin/users', {
-        headers: { Authorization: `Bearer ${authToken}` },
-      });
-      if (!res.ok) throw new Error('Failed');
-      const data = await res.json();
+      const data = await adminApiJson<AdminUserItem[]>('/api/admin/users', authToken);
       setUsers(data);
     } finally {
       setLoading(false);
@@ -86,9 +84,8 @@ export default function AdminUsers() {
     if (!confirm(`Delete user "${user.username}"? This cannot be undone.`)) return;
     setDeleting(user.id);
     try {
-      await fetch(`/api/admin/users/${user.id}`, {
+      await adminApiCall(`/api/admin/users/${user.id}`, authToken, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${authToken}` },
       });
       await fetchUsers();
     } finally {
@@ -99,9 +96,8 @@ export default function AdminUsers() {
   const handleUnlock = async (user: AdminUserItem) => {
     setUnlocking(user.id);
     try {
-      await fetch(`/api/admin/users/${user.id}/unlock`, {
+      await adminApiCall(`/api/admin/users/${user.id}/unlock`, authToken, {
         method: 'PATCH',
-        headers: { Authorization: `Bearer ${authToken}` },
       });
       await fetchUsers();
     } finally {
@@ -253,7 +249,7 @@ export default function AdminUsers() {
       {/* Create user modal */}
       {showCreate && (
         <CreateUserModal
-          authToken={authToken ?? ''}
+          authToken={authToken}
           onClose={() => setShowCreate(false)}
           onSuccess={() => { setShowCreate(false); fetchUsers(); }}
         />
@@ -263,7 +259,7 @@ export default function AdminUsers() {
       {editUser && (
         <EditUserModal
           user={editUser}
-          authToken={authToken ?? ''}
+          authToken={authToken}
           isSuperAdmin={isSuperAdmin}
           onClose={() => setEditUser(null)}
           onSuccess={() => { setEditUser(null); fetchUsers(); }}
@@ -274,7 +270,7 @@ export default function AdminUsers() {
       {passwordUser && (
         <PasswordModal
           user={passwordUser}
-          authToken={authToken ?? ''}
+          authToken={authToken}
           onClose={() => setPasswordUser(null)}
           onSuccess={() => setPasswordUser(null)}
         />
@@ -286,7 +282,7 @@ export default function AdminUsers() {
 // ── Sub-components ────────────────────────────────────────────────────────────
 
 function CreateUserModal({ authToken, onClose, onSuccess }: {
-  authToken: string;
+  authToken: string | null;
   onClose: () => void;
   onSuccess: () => void;
 }) {
@@ -305,12 +301,10 @@ function CreateUserModal({ authToken, onClose, onSuccess }: {
     e.preventDefault();
     setSaving(true); setError(null);
     try {
-      const res = await fetch('/api/admin/users', {
+      await adminApiCall('/api/admin/users', authToken, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
-      if (!res.ok) { const d = await res.json(); throw new Error(d.detail ?? 'Error'); }
       onSuccess();
     } catch (e: any) { setError(e.message); }
     finally { setSaving(false); }
@@ -384,7 +378,7 @@ function CreateUserModal({ authToken, onClose, onSuccess }: {
 
 function EditUserModal({ user, authToken, isSuperAdmin, onClose, onSuccess }: {
   user: AdminUserItem;
-  authToken: string;
+  authToken: string | null;
   isSuperAdmin: boolean;
   onClose: () => void;
   onSuccess: () => void;
@@ -410,12 +404,10 @@ function EditUserModal({ user, authToken, isSuperAdmin, onClose, onSuccess }: {
     e.preventDefault();
     setSaving(true); setError(null);
     try {
-      const res = await fetch(`/api/admin/users/${user.id}`, {
+      await adminApiCall(`/api/admin/users/${user.id}`, authToken, {
         method: 'PUT',
-        headers: { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
-      if (!res.ok) { const d = await res.json(); throw new Error(d.detail ?? 'Error'); }
       onSuccess();
     } catch (e: any) { setError(e.message); }
     finally { setSaving(false); }
@@ -487,7 +479,7 @@ function EditUserModal({ user, authToken, isSuperAdmin, onClose, onSuccess }: {
 
 function PasswordModal({ user, authToken, onClose, onSuccess }: {
   user: AdminUserItem;
-  authToken: string;
+  authToken: string | null;
   onClose: () => void;
   onSuccess: () => void;
 }) {
@@ -500,12 +492,10 @@ function PasswordModal({ user, authToken, onClose, onSuccess }: {
     if (password.length < 8) { setError('Min 8 characters'); return; }
     setSaving(true); setError(null);
     try {
-      const res = await fetch(`/api/admin/users/${user.id}/password`, {
+      await adminApiCall(`/api/admin/users/${user.id}/password`, authToken, {
         method: 'PATCH',
-        headers: { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ new_password: password }),
       });
-      if (!res.ok) { const d = await res.json(); throw new Error(d.detail ?? 'Error'); }
       onSuccess();
     } catch (e: any) { setError(e.message); }
     finally { setSaving(false); }

@@ -5,6 +5,7 @@ import {
   CheckCircle, Clock, Archive, RefreshCw,
 } from 'lucide-react';
 import { useAdminStore } from '@/store/adminStore';
+import { adminApiCall, adminApiJson } from '@/utils/adminApi';
 
 interface BlogPostItem {
   id: number;
@@ -41,7 +42,7 @@ const STATUS_CONFIG = {
 const CATEGORIES = ['All', 'AI', 'Automation', 'Case Studies', 'Industry Insights'];
 
 export default function AdminBlog() {
-  const { authToken } = useAdminStore();
+  const authToken = useAdminStore(state => state.authToken);
   const navigate = useNavigate();
 
   const [posts, setPosts] = useState<BlogPostItem[]>([]);
@@ -64,11 +65,7 @@ export default function AdminBlog() {
       if (statusFilter) params.set('status', statusFilter);
       if (categoryFilter) params.set('category', categoryFilter);
 
-      const res = await fetch(`/api/admin/blog?${params}`, {
-        headers: { Authorization: `Bearer ${authToken}` },
-      });
-      if (!res.ok) throw new Error('Failed to fetch posts');
-      const data: BlogListResponse = await res.json();
+      const data = await adminApiJson<BlogListResponse>(`/api/admin/blog?${params}`, authToken);
       setPosts(data.items);
       setTotal(data.total);
     } catch {
@@ -87,9 +84,8 @@ export default function AdminBlog() {
     if (!confirm(`Delete "${title}"?`)) return;
     setDeleting(id);
     try {
-      await fetch(`/api/admin/blog/${id}`, {
+      await adminApiCall(`/api/admin/blog/${id}`, authToken, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${authToken}` },
       });
       await fetchPosts();
     } finally {
@@ -100,12 +96,10 @@ export default function AdminBlog() {
   const handleDuplicate = async (id: number) => {
     setDuplicating(id);
     try {
-      const res = await fetch(`/api/admin/blog/${id}/duplicate`, {
+      const data = await adminApiJson<{ id?: number }>(`/api/admin/blog/${id}/duplicate`, authToken, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${authToken}` },
       });
-      if (res.ok) {
-        const data = await res.json();
+      if (data.id) {
         navigate(`/admin/blog/${data.id}/edit`);
       }
     } finally {
@@ -114,9 +108,8 @@ export default function AdminBlog() {
   };
 
   const handleStatusChange = async (id: number, newStatus: string) => {
-    await fetch(`/api/admin/blog/${id}/status`, {
+    await adminApiCall(`/api/admin/blog/${id}/status`, authToken, {
       method: 'PATCH',
-      headers: { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: newStatus }),
     });
     await fetchPosts();

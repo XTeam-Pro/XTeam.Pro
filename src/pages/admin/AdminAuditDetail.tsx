@@ -25,7 +25,7 @@ import {
   Trash2,
 } from 'lucide-react';
 import { useAdminStore } from '@/store/adminStore';
-import { apiCall } from '@/utils/api';
+import { adminApiCall } from '@/utils/adminApi';
 
 interface AuditResult {
   maturity_score: number;
@@ -132,7 +132,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 export default function AdminAuditDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { authToken } = useAdminStore();
+  const authToken = useAdminStore(state => state.authToken);
   const [audit, setAudit] = useState<AuditDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [reprocessing, setReprocessing] = useState(false);
@@ -143,9 +143,7 @@ export default function AdminAuditDetail() {
     if (!id || !authToken) return;
     (async () => {
       try {
-        const res = await apiCall(`/api/admin/audits/${id}`, {
-          headers: { Authorization: `Bearer ${authToken}` },
-        });
+        const res = await adminApiCall(`/api/admin/audits/${id}`, authToken);
         if (res.status === 404) { navigate('/admin/audits'); return; }
         const data = await res.json();
         setAudit(data);
@@ -162,9 +160,8 @@ export default function AdminAuditDetail() {
     if (!audit || !confirm('Перезапустить анализ ИИ? Текущий результат будет удалён.')) return;
     setReprocessing(true);
     try {
-      await apiCall(`/api/admin/audits/${audit.id}/reprocess`, {
+      await adminApiCall(`/api/admin/audits/${audit.id}/reprocess`, authToken, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${authToken}` },
       });
       toast.success('Анализ запущен заново. Обновите страницу через минуту.');
       setAudit(prev => prev ? { ...prev, status: 'pending', result: null } : prev);
@@ -179,9 +176,8 @@ export default function AdminAuditDetail() {
     if (!audit) return;
     setSendingEmail(true);
     try {
-      await apiCall(`/api/admin/audits/${audit.id}/send-email`, {
+      await adminApiCall(`/api/admin/audits/${audit.id}/send-email`, authToken, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${authToken}` },
       });
       toast.success(`Письмо отправлено на ${audit.contact_email}`);
     } catch (err: any) {
@@ -196,9 +192,8 @@ export default function AdminAuditDetail() {
     if (!audit || !confirm(`Удалить аудит «${audit.company_name}»? Это действие необратимо.`)) return;
     setDeleting(true);
     try {
-      await apiCall(`/api/admin/submissions/${audit.id}`, {
+      await adminApiCall(`/api/admin/submissions/${audit.id}`, authToken, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${authToken}` },
       });
       toast.success('Аудит удалён');
       navigate('/admin/audits');

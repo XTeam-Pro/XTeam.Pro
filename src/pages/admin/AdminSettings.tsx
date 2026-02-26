@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { Save, RotateCcw, Mail, Server, Globe, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { useAdminStore } from '@/store/adminStore';
-import { apiCall } from '@/utils/api';
+import { adminApiCall } from '@/utils/adminApi';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -119,7 +119,8 @@ function Card({ title, icon, children }: { title: string; icon: React.ReactNode;
 // ── Main component ────────────────────────────────────────────────────────────
 
 export default function AdminSettings() {
-  const { authToken, adminUser } = useAdminStore();
+  const authToken = useAdminStore(state => state.authToken);
+  const adminUser = useAdminStore(state => state.adminUser);
   const isSuperAdmin = adminUser?.role === 'super_admin';
 
   const [auditCfg, setAuditCfg] = useState<AuditConfig>(DEFAULT_AUDIT);
@@ -130,13 +131,13 @@ export default function AdminSettings() {
   const [testingSmtp, setTestingSmtp] = useState(false);
   const [smtpTestResult, setSmtpTestResult] = useState<{ ok: boolean; message: string } | null>(null);
 
-  const loadAll = async () => {
+  const loadAll = useCallback(async () => {
     if (!authToken) return;
     setLoading(true);
     try {
       const [cfgRes, sysRes] = await Promise.all([
-        apiCall('/api/admin/configuration', { headers: { Authorization: `Bearer ${authToken}` } }),
-        apiCall('/api/admin/settings', { headers: { Authorization: `Bearer ${authToken}` } }),
+        adminApiCall('/api/admin/configuration', authToken),
+        adminApiCall('/api/admin/settings', authToken),
       ]);
       if (cfgRes.ok) {
         const d = await cfgRes.json();
@@ -150,17 +151,16 @@ export default function AdminSettings() {
     } catch { /* use defaults */ } finally {
       setLoading(false);
     }
-  };
+  }, [authToken]);
 
-  useEffect(() => { loadAll(); }, [authToken]);
+  useEffect(() => { loadAll(); }, [loadAll]);
 
   const handleSaveAudit = async () => {
     if (!authToken) return;
     setSaving(true);
     try {
-      await apiCall('/api/admin/configuration', {
+      await adminApiCall('/api/admin/configuration', authToken, {
         method: 'PUT',
-        headers: { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json' },
         body: JSON.stringify(auditCfg),
       });
       toast.success('Конфигурация AI сохранена');
@@ -171,9 +171,8 @@ export default function AdminSettings() {
     if (!authToken) return;
     setSaving(true);
     try {
-      await apiCall('/api/admin/settings', {
+      await adminApiCall('/api/admin/settings', authToken, {
         method: 'PUT',
-        headers: { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ smtp, general }),
       });
       toast.success('Системные настройки сохранены');
@@ -185,9 +184,8 @@ export default function AdminSettings() {
     setTestingSmtp(true);
     setSmtpTestResult(null);
     try {
-      const res = await apiCall('/api/admin/settings/test-smtp', {
+      const res = await adminApiCall('/api/admin/settings/test-smtp', authToken, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${authToken}` },
       });
       const data = await res.json();
       setSmtpTestResult(data);

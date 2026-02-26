@@ -5,7 +5,8 @@ import { apiCall } from '@/utils/api';
 
 export default function AdminLogin() {
   const navigate = useNavigate();
-  const { setAuth, authToken } = useAdminStore();
+  const setAuth = useAdminStore(state => state.setAuth);
+  const authToken = useAdminStore(state => state.authToken);
   const [form, setForm] = useState({ username: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

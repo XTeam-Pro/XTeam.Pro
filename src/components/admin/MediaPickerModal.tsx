@@ -1,8 +1,8 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { X, Upload, Check, ImageIcon, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAdminStore } from '@/store/adminStore';
-import { apiCall } from '@/utils/api';
+import { adminApiJson } from '@/utils/adminApi';
 
 interface MediaFile {
   id: number;
@@ -23,33 +23,33 @@ interface MediaPickerModalProps {
 }
 
 export default function MediaPickerModal({ open, onClose, onSelect }: MediaPickerModalProps) {
-  const { authToken } = useAdminStore();
+  const authToken = useAdminStore(state => state.authToken);
   const [files, setFiles] = useState<MediaFile[]>([]);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [selected, setSelected] = useState<MediaFile | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (!open || !authToken) return;
-    setSelected(null);
-    loadFiles();
-  }, [open, authToken]);
-
-  const loadFiles = async () => {
+  const loadFiles = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await apiCall('/api/admin/media?mime_prefix=image/&limit=50', {
-        headers: { Authorization: `Bearer ${authToken}` },
-      });
-      const data = await res.json();
+      const data = await adminApiJson<{ items?: MediaFile[] }>(
+        '/api/admin/media?mime_prefix=image/&limit=50',
+        authToken,
+      );
       setFiles(data.items ?? []);
     } catch {
       toast.error('Не удалось загрузить медиафайлы');
     } finally {
       setLoading(false);
     }
-  };
+  }, [authToken]);
+
+  useEffect(() => {
+    if (!open || !authToken) return;
+    setSelected(null);
+    void loadFiles();
+  }, [open, authToken, loadFiles]);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -62,13 +62,10 @@ export default function MediaPickerModal({ open, onClose, onSelect }: MediaPicke
     try {
       const formData = new FormData();
       formData.append('file', file);
-      const res = await fetch('/api/admin/media', {
+      const newFile = await adminApiJson<MediaFile>('/api/admin/media', authToken, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${authToken}` },
         body: formData,
       });
-      if (!res.ok) throw new Error('Upload failed');
-      const newFile: MediaFile = await res.json();
       setFiles(prev => [newFile, ...prev]);
       setSelected(newFile);
       toast.success('Файл загружен');

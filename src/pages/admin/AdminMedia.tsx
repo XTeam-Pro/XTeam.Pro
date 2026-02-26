@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { Upload, Search, Trash2, Copy, Image as ImageIcon, FileText, Film, RefreshCw, X, LayoutGrid, List } from 'lucide-react';
 import { useAdminStore } from '@/store/adminStore';
+import { adminApiCall, adminApiJson } from '@/utils/adminApi';
 
 interface MediaItem {
   id: number;
@@ -35,7 +36,7 @@ function FileIcon({ mime }: { mime: string }) {
 }
 
 export default function AdminMedia() {
-  const { authToken } = useAdminStore();
+  const authToken = useAdminStore(state => state.authToken);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [items, setItems] = useState<MediaItem[]>([]);
@@ -60,11 +61,7 @@ export default function AdminMedia() {
       const params = new URLSearchParams({ skip: String(page * limit), limit: String(limit) });
       if (search) params.set('search', search);
       if (mimeFilter) params.set('mime_prefix', mimeFilter);
-      const res = await fetch(`/api/admin/media?${params}`, {
-        headers: { Authorization: `Bearer ${authToken}` },
-      });
-      if (!res.ok) throw new Error('Failed');
-      const data: MediaListResponse = await res.json();
+      const data = await adminApiJson<MediaListResponse>(`/api/admin/media?${params}`, authToken);
       setItems(data.items);
       setTotal(data.total);
     } catch {
@@ -84,15 +81,10 @@ export default function AdminMedia() {
     form.append('file', file);
     form.append('folder', 'uploads');
     try {
-      const res = await fetch('/api/admin/media', {
+      await adminApiCall('/api/admin/media', authToken, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${authToken}` },
         body: form,
       });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.detail ?? 'Upload failed');
-      }
       await fetchMedia();
     } catch (e: any) {
       setUploadError(e.message);
@@ -118,9 +110,8 @@ export default function AdminMedia() {
     if (!confirm('Delete this file?')) return;
     setDeleting(id);
     try {
-      await fetch(`/api/admin/media/${id}`, {
+      await adminApiCall(`/api/admin/media/${id}`, authToken, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${authToken}` },
       });
       if (selected?.id === id) setSelected(null);
       await fetchMedia();
