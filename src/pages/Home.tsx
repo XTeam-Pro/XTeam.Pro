@@ -81,7 +81,7 @@ export default function Home() {
       icon: <HeadphonesIcon className="h-6 w-6" />,
       title: t('home.routing.tile1Title'),
       desc: t('home.routing.tile1Desc'),
-      anchor: 'customer',
+      anchor: 'automation',
     },
     {
       icon: <TrendingUp className="h-6 w-6" />,
@@ -93,7 +93,7 @@ export default function Home() {
       icon: <FileText className="h-6 w-6" />,
       title: t('home.routing.tile3Title'),
       desc: t('home.routing.tile3Desc'),
-      anchor: 'backoffice',
+      anchor: 'idp',
     },
     {
       icon: <BarChart2 className="h-6 w-6" />,
@@ -105,13 +105,13 @@ export default function Home() {
       icon: <Users className="h-6 w-6" />,
       title: t('home.routing.tile5Title'),
       desc: t('home.routing.tile5Desc'),
-      anchor: 'hr',
+      anchor: 'hrxteam',
     },
     {
       icon: <Cpu className="h-6 w-6" />,
       title: t('home.routing.tile6Title'),
       desc: t('home.routing.tile6Desc'),
-      anchor: 'it',
+      anchor: 'aiops',
     },
   ];
 
@@ -281,11 +281,11 @@ export default function Home() {
               {t('home.features.subtitle')}
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
             {painPoints.map((point, i) => (
               <Card
                 key={i}
-                className="border border-gray-200 hover:border-primary/40 hover:shadow-md transition-all duration-200"
+                className="border border-gray-200 hover:border-primary/40 hover:shadow-md transition-all duration-200 h-full flex flex-col"
               >
                 <CardHeader className="pb-3">
                   <div className="flex items-start gap-4">
@@ -297,7 +297,7 @@ export default function Home() {
                     </CardTitle>
                   </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="flex-1">
                   <p className="text-gray-600 text-sm leading-relaxed">
                     {point.description}
                   </p>
@@ -321,12 +321,12 @@ export default function Home() {
               {t('home.routing.subtitle')}
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch">
             {routingTiles.map((tile, i) => (
               <Link
                 key={i}
                 to={`/solutions#${tile.anchor}`}
-                className="group flex flex-col gap-3 p-6 bg-white rounded-xl border border-gray-200 hover:border-primary/50 hover:shadow-md transition-all duration-200"
+                className="group flex flex-col gap-3 p-6 bg-white rounded-xl border border-gray-200 hover:border-primary/50 hover:shadow-md transition-all duration-200 h-full"
               >
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-200">
@@ -336,10 +336,10 @@ export default function Home() {
                     {tile.title}
                   </span>
                 </div>
-                <p className="text-sm text-gray-500 leading-relaxed">
+                <p className="text-sm text-gray-500 leading-relaxed flex-1">
                   {tile.desc}
                 </p>
-                <span className="text-xs text-primary font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <span className="text-xs text-primary font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 mt-auto">
                   {t('home.routing.viewAll')}
                   <ArrowRight className="h-3 w-3" />
                 </span>

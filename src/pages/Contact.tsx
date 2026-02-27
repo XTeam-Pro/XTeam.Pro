@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Mail, Phone, MapPin, Clock, Calendar, MessageSquare, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -42,6 +42,14 @@ interface ContactInfo {
 
 export default function Contact() {
   const { t } = useTranslation();
+  const [searchParams] = useSearchParams();
+  const sourceParam = searchParams.get('source');
+  const caseParam = searchParams.get('case');
+  const refParam = searchParams.get('ref');
+  const composedSource = [sourceParam, caseParam ? `case:${caseParam}` : null, refParam ? `ref:${refParam}` : null]
+    .filter((value): value is string => Boolean(value))
+    .join('|');
+  const submissionSource = (composedSource || 'website_contact').slice(0, 100);
   const localizedInfo = t('contact.info', { returnObjects: true }) as {
     email: { title: string; details: string[]; action?: string };
     phone: { title: string; details: string[]; action?: string };
@@ -195,7 +203,8 @@ export default function Contact() {
       budget_range: data.budget || null,
       timeline: data.timeline || null,
       services_interested: data.services.length > 0 ? data.services : [],
-      marketing_consent: data.marketingConsent
+      marketing_consent: data.marketingConsent,
+      source: submissionSource
     };
   };
 

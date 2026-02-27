@@ -502,6 +502,7 @@ async def get_contacts_management(
                 "company": contact.company,
                 "inquiry_type": contact.inquiry_type,
                 "subject": contact.subject,
+                "source": contact.source,
                 "status": contact.status,
                 "priority": contact.priority,
                 "created_at": contact.created_at,

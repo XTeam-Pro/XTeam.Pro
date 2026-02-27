@@ -40,4 +40,4 @@ output/
 *.sw?
 .playwright-cli/
 .trae/documents/user_doc
-tmp/docs
+tmp

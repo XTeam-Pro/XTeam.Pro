@@ -6,6 +6,9 @@
 
 @layer base {
   :root {
+    --site-header-height: 4rem;
+    --page-sticky-nav-height: 3.5rem;
+    --sticky-offset: calc(var(--site-header-height) + var(--page-sticky-nav-height));
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;

@@ -739,7 +739,15 @@
     "hero": {
       "title": "R&D Ecosystem at the Intersection of",
       "titleHighlight": "AI and Business",
-      "subtitle": "We connect fundamental research with industrial development — from school AI tutors to complex B2B process automation. Modular. Open. Vendor-lock-free."
+      "subtitle": "We connect fundamental research with industrial development — from school AI tutors to complex B2B process automation. Modular. Open. Vendor-lock-free.",
+      "line1": "R&D + industrial implementation —",
+      "line2": "for businesses in Russia, Azerbaijan, the CIS, and beyond",
+      "line3": "Results in days, not months. Modular. Vendor-lock-free.",
+      "proof1": "6+ live products in production",
+      "proof2": "2 offices: Baku · Moscow",
+      "proof3": "Verified KPI: 1.5× throughput, 30%+ HR productivity",
+      "ctaPrimary": "Book a discovery call",
+      "ctaSecondary": "View case studies"
     },
     "story": {
       "title": "Our Story",
@@ -750,16 +758,117 @@
       "officeImageAlt": "XTeam.Pro Team",
       "recognition": "Ministry of Education support",
       "mission": "Human-Magic — AI & Human Symbiosis",
-      "team": "Engineers across Baku & Moscow"
+      "team": "Engineers across Baku & Moscow",
+      "heading1": "From research lab to production",
+      "heading2": "Applied AI, not theoretical",
+      "heading3": "Our mission: Human-Magic",
+      "heading4": "Institutional credibility",
+      "offices": "Baku / Moscow"
     },
     "journey": {
-      "title": "Our Journey",
-      "subtitle": "Key milestones in building the XTeam.Pro ecosystem."
+      "title": "What we've built — and what it delivered",
+      "subtitle": "Each step created something measurable for the businesses involved."
     },
     "team": {
       "title": "Our Team",
       "subtitle": "AI engineers, data scientists, and business analysts across Baku and Moscow — working at the intersection of technology and real business problems.",
-      "expertise": "Expertise"
+      "expertise": "Expertise",
+      "deliveryTitle": "How we staff a project",
+      "deliverySubtitle": "Each engagement has a defined responsibility chain — you always know who owns what.",
+      "roles": {
+        "rdTitle": "R&D / Architecture",
+        "rdDesc": "Defines feasibility, selects models and data approach, owns technical risk",
+        "delivTitle": "Delivery Engineering",
+        "delivDesc": "Implements integrations, APIs, infra — FastAPI + PostgreSQL + Docker stack",
+        "autoTitle": "Automation Layer",
+        "autoDesc": "n8n / Typebot pipelines, process orchestration, trigger logic",
+        "integTitle": "Integration & QA",
+        "integDesc": "Third-party API wiring, OpenAPI contracts, acceptance testing",
+        "pmTitle": "Account / PM",
+        "pmDesc": "Single point of contact, weekly status, escalation owner"
+      },
+      "governanceTitle": "Governance and accountability",
+      "governanceSubtitle": "Quality, risk, and reporting ownership is fixed from day one.",
+      "governance": {
+        "ownerLabel": "Owner",
+        "cadenceLabel": "Cadence",
+        "quality": {
+          "title": "Quality gate",
+          "description": "Acceptance criteria and release readiness are checked before each rollout.",
+          "owner": "Delivery Lead + QA",
+          "cadence": "Weekly checkpoint + release review"
+        },
+        "risk": {
+          "title": "Risk register",
+          "description": "Technical, legal, and integration risks are reviewed with mitigation actions.",
+          "owner": "Solution Architect",
+          "cadence": "Weekly update, escalation within 24h"
+        },
+        "reporting": {
+          "title": "Executive reporting",
+          "description": "Business KPI delta and implementation progress shared with project sponsors.",
+          "owner": "Account / PM",
+          "cadence": "Weekly status + monthly steering"
+        }
+      },
+      "processArtifactsTitle": "How we document delivery",
+      "processArtifactsSubtitle": "Each phase has a tangible artifact you can review and approve.",
+      "processArtifacts": {
+        "discovery": {
+          "title": "Discovery brief",
+          "description": "Hypotheses, baseline metrics, priorities, and access constraints.",
+          "linkText": "See discovery format",
+          "linkHref": "/solutions"
+        },
+        "scope": {
+          "title": "Pilot scope",
+          "description": "Pilot boundaries, integrations, done criteria, and ownership model.",
+          "linkText": "See scope example",
+          "linkHref": "/case-studies#energy-digitalization"
+        },
+        "acceptance": {
+          "title": "Acceptance checklist",
+          "description": "KPI acceptance rules, go-live conditions, and handover plan.",
+          "linkText": "See acceptance example",
+          "linkHref": "/case-studies#healthcare-analytics"
+        }
+      },
+      "decisionKit": {
+        "title": "Decision committee kit",
+        "subtitle": "A short checklist your internal sponsors can use before pilot budget approval.",
+        "items": {
+          "context": "Scope and baseline assumptions",
+          "risks": "Risk owners and mitigation plan",
+          "kpi": "KPI model, reporting cadence, and acceptance criteria"
+        },
+        "button": "Request one-page brief"
+      },
+      "leadership": {
+        "title": "Company Leadership",
+        "subtitle": "The people driving strategy and technical direction at XTeam.Pro."
+      },
+      "tikhonov": {
+        "initials": "AT",
+        "name": "Andrey Tikhonov",
+        "role": "Chief Technology Officer",
+        "bio": "Leads technical architecture and R&D across all XTeam.Pro products. Specializes in production-grade LLM orchestration, distributed system design, and AI pipeline engineering. Architected X-LogOS, FastAI aviation RFQ pipeline, and StudyNinja multi-agent tutor. Drives the vendor-lock-free approach across all product integrations.",
+        "area1": "AI/ML Architecture",
+        "area2": "LLM Orchestration & RAG",
+        "area3": "FastAPI · Python · PostgreSQL",
+        "area4": "Distributed Systems Design",
+        "area5": "R&D & Technical Risk"
+      },
+      "byrdin": {
+        "initials": "MB",
+        "name": "Maxim Byrdin",
+        "role": "Director of Business Development",
+        "bio": "Drives commercial strategy, client discovery, and industry partnerships. Led pilots across aviation, security systems, HR/L&D, and manufacturing. Built institutional relationships with FSI and Skolkovo Foundation. Expands XTeam.Pro presence across Russia, Azerbaijan, and CIS — connecting business challenges with the right automation solutions.",
+        "area1": "B2B Pilot Strategy",
+        "area2": "Industry Partnerships",
+        "area3": "CIS & Regional Markets",
+        "area4": "Aviation · HR · Manufacturing",
+        "area5": "Institutional Relations (FSI, Skolkovo)"
+      }
     },
     "teamDomains": {
       "aiMl": {
@@ -801,108 +910,48 @@
     },
     "cta": {
       "title": "Ready to discuss your project?",
-      "subtitle": "Pilot results in days after task discussion. Modular approach — start small, scale fast.",
+      "subtitle": "Discovery in 1–2 weeks — first conclusions on your process, no lengthy sales cycle. Pilot: 4–12 weeks from agreed scope to a measured production result.",
       "scheduleButton": "Book a discovery call",
-      "downloadButton": "View solutions"
-    },
-    "teamMembers": {
-      "sarahChen": {
-        "name": "AI / ML Engineering",
-        "position": "Core Team",
-        "bio": "LLM orchestration, multi-agent systems, RAG pipelines, PyTorch, vector databases — building autonomous agents for complex business and educational processes.",
-        "expertise": [
-          "AI Strategy",
-          "Machine Learning",
-          "Multi-agent Systems",
-          "Knowledge Graphs"
-        ]
-      },
-      "michaelRodriguez": {
-        "name": "EdTech & Knowledge Systems",
-        "position": "Core Team",
-        "bio": "Adaptive learning trajectories, psychometric profiling (HBDI/Big Five), competency taxonomies — powering StudyNinja and X-LogOS Knowledge OS.",
-        "expertise": [
-          "EdTech",
-          "Knowledge Graphs",
-          "Adaptive Learning",
-          "Psychometrics"
-        ]
-      },
-      "jenniferWalsh": {
-        "name": "Backend & DevOps",
-        "position": "Core Team",
-        "bio": "FastAPI, Python, PostgreSQL, Redis, Docker, Traefik, GitHub Actions, Prometheus — reliable production infrastructure for all XTeam products.",
-        "expertise": [
-          "FastAPI",
-          "DevOps",
-          "Cloud Infrastructure",
-          "CI/CD"
-        ]
-      },
-      "davidKim": {
-        "name": "HR Automation",
-        "position": "Core Team",
-        "bio": "Personnel assessment, competency modeling, automated onboarding pipelines, certification management, productivity analytics — HRXteam direction.",
-        "expertise": [
-          "HR Tech",
-          "Process Automation",
-          "Competency Models",
-          "L&D"
-        ]
-      },
-      "amandaFoster": {
-        "name": "Product & Integration",
-        "position": "Core Team",
-        "bio": "React/TypeScript, Flutter, n8n, Typebot, API-first design, OpenAPI — seamless product experiences and third-party integrations.",
-        "expertise": [
-          "Product Design",
-          "React/TypeScript",
-          "Flutter",
-          "n8n"
-        ]
-      },
-      "robertJohnson": {
-        "name": "Business Development",
-        "position": "Core Team",
-        "bio": "Industry pilots, client discovery, partnership development across aviation, security systems, manufacturing, finance and HR/L&D sectors.",
-        "expertise": [
-          "Business Strategy",
-          "Industry Pilots",
-          "Partnerships",
-          "B2B"
-        ]
-      }
+      "downloadButton": "View solutions",
+      "casesButton": "View case studies",
+      "solutionsButton": "Explore solutions"
     },
     "milestones": {
       "founded": {
         "year": "2022",
         "title": "XTeam.Pro Founded",
-        "description": "Ecosystem launched connecting R&D research with industrial AI implementations"
+        "description": "Ecosystem launched connecting R&D research with industrial AI implementations",
+        "clientValue": "Established the R&D-to-production pipeline clients rely on today"
       },
       "firstClient": {
         "year": "2023",
         "title": "StudyNinja Platform",
-        "description": "Educational AI platform with personal learning trajectories, multi-agent AI tutor and psychometric profiling"
+        "description": "Educational AI platform with personal learning trajectories, multi-agent AI tutor and psychometric profiling",
+        "clientValue": "Adaptive AI tutor now serving students across CIS"
       },
       "seriesA": {
         "year": "2023",
         "title": "Ministry of Education Support",
-        "description": "StudyNinja project supported by Russian Ministry of Education and Science and State Innovation Fund"
+        "description": "StudyNinja project supported by Russian Ministry of Education and Science and State Innovation Fund",
+        "clientValue": "Institutional validation that enterprise clients can reference in procurement"
       },
       "hundredClients": {
         "year": "2024",
         "title": "Aviation Pilot (FastAI)",
-        "description": "AI email ingestion pipeline for aircraft parts RFQ processing — first major B2B automation case study"
+        "description": "AI email ingestion pipeline for aircraft parts RFQ processing — first major B2B automation case study",
+        "clientValue": "Aviation industry: RFQ processing time cut by 1.5×"
       },
       "aiAward": {
         "year": "2024",
         "title": "X-LogOS Knowledge OS",
-        "description": "Corporate knowledge management platform deployed — combining Wiki, LMS, and process documentation in one system"
+        "description": "Corporate knowledge management platform deployed — combining Wiki, LMS, and process documentation in one system",
+        "clientValue": "Corporate teams gained one unified knowledge system (Wiki + LMS + Docs)"
       },
       "globalExpansion": {
         "year": "2025",
         "title": "Multi-industry Expansion",
-        "description": "Active pilots across aviation, security systems, manufacturing, financial analytics and HR/L&D sectors"
+        "description": "Active pilots across aviation, security systems, manufacturing, financial analytics and HR/L&D sectors",
+        "clientValue": "Clients across 5 industries — same modular stack, new domain each time"
       }
     },
     "values": {
@@ -910,41 +959,144 @@
       "subtitle": "The architecture decisions and working principles that define how we build and deliver.",
       "resultsDriven": {
         "title": "Modularity & Openness",
-        "description": "Vendor-lock-free architectures, API-first design, transparent interfaces. You can change LLM providers, cloud vendors, or add modules without redesigning the core."
+        "description": "Vendor-lock-free architectures, API-first design, transparent interfaces. You can change LLM providers, cloud vendors, or add modules without redesigning the core.",
+        "example": "Example: FastAI aviation client switched LLM providers mid-project with zero re-architecture.",
+        "linkText": "See aviation case",
+        "linkHref": "/case-studies#ecommerce-automation"
       },
       "humanCenteredAI": {
         "title": "Applied Science",
-        "description": "We bridge fundamental research (new mathematics, knowledge graphs, psychometrics) with real industrial implementations — not theoretical showcases."
+        "description": "We bridge fundamental research (new mathematics, knowledge graphs, psychometrics) with real industrial implementations — not theoretical showcases.",
+        "example": "Example: StudyNinja psychometric profiling — the AI adapts to the learner, not the reverse.",
+        "linkText": "See EdTech product",
+        "linkHref": "/case-studies#study-ninja"
       },
       "excellence": {
         "title": "Speed to Value",
-        "description": "Discovery in 1-2 weeks, MVP in 4-8 weeks, working pilot in 4-12 weeks. Results in days after task discussion, not months after a lengthy sales process."
+        "description": "Discovery in 1-2 weeks — first insights fast. Working pilot: from agreed scope to first production result in 4-12 weeks, with weekly checkpoints throughout.",
+        "example": "Example: X-LogOS knowledge base went from kick-off to pilot in 6 weeks.",
+        "linkText": "See timeline",
+        "linkHref": "/solutions"
       },
       "transparency": {
         "title": "Transparency & Ethics",
-        "description": "OpenAPI/Swagger documentation, explainable AI decisions, data minimization, clear human/machine responsibility boundaries, option to delete data on request."
+        "description": "OpenAPI/Swagger documentation, explainable AI decisions, data minimization, clear human/machine responsibility boundaries, option to delete data on request.",
+        "example": "Example: Every integration ships with OpenAPI docs. Clients own the data.",
+        "linkText": "View solutions",
+        "linkHref": "/solutions"
       }
     },
     "stats": {
       "clientsServed": {
         "number": "6+",
         "label": "Active Products",
-        "description": "StudyNinja, X-LogOS, VILAVI AI, FastAI, HRXteam, Balansis"
+        "description": "StudyNinja, X-LogOS, VILAVI AI, FastAI, HRXteam, Balansis",
+        "link": "/solutions"
       },
       "costSavings": {
         "number": "1.5×",
         "label": "Operational Efficiency",
-        "description": "Achieved in aviation process automation pilot"
+        "description": "Achieved in aviation process automation pilot",
+        "link": "/case-studies#ecommerce-automation"
       },
       "uptime": {
         "number": "30%+",
         "label": "Productivity Gain",
-        "description": "HR effectiveness improvement in knowledge base case"
+        "description": "HR effectiveness improvement in knowledge base case",
+        "link": "/case-studies#healthcare-analytics"
       },
       "support": {
         "number": "2",
         "label": "Office Locations",
-        "description": "Baku, Azerbaijan · Moscow, Russia"
+        "description": "Baku, Azerbaijan · Moscow, Russia",
+        "link": "/about#contact"
+      }
+    },
+    "factSheet": {
+      "title": "In brief — what we actually do",
+      "geoLabel": "Geography",
+      "geoValue": "Baku, Azerbaijan · Moscow, Russia",
+      "typesLabel": "Project types",
+      "typesValue": "Discovery (1–2 wk) · Pilot (4–12 wk) · Full implementation · Ongoing support",
+      "deliverableLabel": "What you get",
+      "deliverableValue": "Working automation with measured KPI: throughput, time-to-process, cost-per-unit",
+      "notLabel": "What we do NOT do",
+      "notValue": "We don't sell SaaS licenses. We don't do generic consulting decks. We don't start with a 3-month discovery phase.",
+      "institutionalLabel": "Institutional backing",
+      "institutionalValue": "StudyNinja — supported by Russian Ministry of Education and Science + State Innovation Fund"
+    },
+    "evidence": {
+      "title": "How we substantiate our claims",
+      "subtitle": "Key trust signals and KPI methodology used in our case studies.",
+      "cards": {
+        "institutional": {
+          "title": "Institutional Backing",
+          "description": "Claims around educational R&D are backed by public program participation and documented support statuses.",
+          "linkText": "See StudyNinja case",
+          "linkHref": "/case-studies#study-ninja"
+        },
+        "recognition": {
+          "title": "Delivery Evidence",
+          "description": "Production claims are tied to concrete pilots with domain context, timeline and outcome.",
+          "linkText": "See B2B cases",
+          "linkHref": "/case-studies"
+        },
+        "methodology": {
+          "title": "KPI Measurement Method",
+          "description": "We publish baseline-to-delta logic and scope boundaries to avoid marketing-only numbers.",
+          "linkText": "View measurement examples",
+          "linkHref": "/case-studies#ecommerce-automation"
+        }
+      },
+      "kpiTitle": "How KPI numbers are calculated",
+      "kpiSubtitle": "Each metric references baseline, intervention period, and context limits.",
+      "kpis": {
+        "aviation": {
+          "metric": "1.5× operational efficiency",
+          "method": "Baseline: manual RFQ processing cycle. Delta: cycle time after AI triage and routing in pilot period.",
+          "caveat": "Depends on input quality and integration depth.",
+          "linkText": "Open aviation case",
+          "linkHref": "/case-studies#ecommerce-automation"
+        },
+        "hr": {
+          "metric": "30%+ productivity gain",
+          "method": "Baseline: HR process throughput before knowledge workflow rollout. Delta measured after stabilized onboarding cycle.",
+          "caveat": "Applies to structured L&D and knowledge-heavy teams.",
+          "linkText": "Open HR case",
+          "linkHref": "/case-studies#healthcare-analytics"
+        },
+        "pilot": {
+          "metric": "4-8 week pilot delivery",
+          "method": "Measured from approved scope to first production result with weekly checkpoints.",
+          "caveat": "Timeline can shift with legal/security access constraints.",
+          "linkText": "See pilot flow",
+          "linkHref": "/solutions"
+        }
+      },
+      "thirdParty": {
+        "title": "Third-party references",
+        "subtitle": "Public registries and standards we use for independent due diligence.",
+        "note": "For client privacy, public links show registries and standards only; project IDs and letters are shared during discovery under NDA.",
+        "items": {
+          "fsi": {
+            "title": "FSI (Innovation Assistance Fund)",
+            "description": "Official operator of public innovation support programs in Russia.",
+            "linkText": "Open official site",
+            "linkHref": "https://fasie.ru/"
+          },
+          "skolkovo": {
+            "title": "Skolkovo Foundation",
+            "description": "Official innovation ecosystem portal and public program directory.",
+            "linkText": "Open official site",
+            "linkHref": "https://sk.ru/"
+          },
+          "iso": {
+            "title": "ISO/IEC 42001 (AI management)",
+            "description": "International AI management system standard used in governance discussions.",
+            "linkText": "View standard overview",
+            "linkHref": "https://www.iso.org/standard/81230.html"
+          }
+        }
       }
     }
   },
@@ -1172,10 +1324,22 @@
       "title": "How we run pilots",
       "subtitle": "We measure from the baseline, deliver in 2–8 weeks, document results, and keep humans in control of critical decisions.",
       "items": [
-        { "title": "Baseline KPI", "text": "We fix the starting metric before day one — no baseline, no valid result" },
-        { "title": "Pilot 2–8 weeks", "text": "Focused scope with measurable outcome. No vendor lock-in." },
-        { "title": "Before/after report", "text": "Documented business impact — ready for internal stakeholder sign-off" },
-        { "title": "Human-in-the-loop", "text": "Logging, access control, and exception handling built in from the start" }
+        {
+          "title": "Baseline KPI",
+          "text": "We fix the starting metric before day one — no baseline, no valid result"
+        },
+        {
+          "title": "Pilot 2–8 weeks",
+          "text": "Focused scope with measurable outcome. No vendor lock-in."
+        },
+        {
+          "title": "Before/after report",
+          "text": "Documented business impact — ready for internal stakeholder sign-off"
+        },
+        {
+          "title": "Human-in-the-loop",
+          "text": "Logging, access control, and exception handling built in from the start"
+        }
       ]
     },
     "industryStories": {
@@ -1435,11 +1599,19 @@
       "subtitle": "No fixed price lists — we agree on scope and budget after discovery. Turnkey pilot: 1.5–3 months, budget from agreed minimum after discovery call.",
       "monthly": "Monthly",
       "annual": "Annual",
-      "save": "(Save 17%)"
+      "save": "(Save 17%)",
+      "markers": [
+        "KPIs and baseline fixed before we start",
+        "Budget range — before the discovery call",
+        "Artifacts stay with you, no vendor lock-in"
+      ]
     },
     "tiers": {
       "mostPopular": "Most Common",
       "whatsIncluded": "What's included:",
+      "whatsDelivered": "What you get:",
+      "clientNeedsLabel": "What we need from you:",
+      "pricingDriversLabel": "What affects the cost",
       "limitations": "Best for:",
       "starter": {
         "name": "Time & Materials",
@@ -1454,7 +1626,14 @@
           "Agreed Definition of Done"
         ],
         "cta": "Book discovery call",
-        "popular": false
+        "popular": false,
+        "deliverables": [
+          "Pilot KPI map (baseline → target → measurement method)",
+          "Prototype/MVP fragment (one process or agent/integration)",
+          "Integration skeleton (connection to 1–2 systems/sources)",
+          "Pilot report: impact, limitations, scaling plan"
+        ],
+        "clientNeeds": "Process owner, data/system access, 1–2 stakeholder interviews"
       },
       "professional": {
         "name": "Fixed Scope",
@@ -1469,7 +1648,22 @@
           "Deployment and documentation"
         ],
         "cta": "Request a brief",
-        "popular": true
+        "popular": true,
+        "deliverables": [
+          "Architecture and integration diagram",
+          "Implemented automation flows / agents / reporting",
+          "Test plan and acceptance criteria",
+          "Documentation and handover",
+          "Support and development plan"
+        ],
+        "clientNeeds": "Detailed brief, API/system access, dedicated process owner",
+        "pricingDrivers": [
+          "Number of processes and use cases",
+          "Number and complexity of integrations",
+          "Infrastructure requirements (cloud/on-prem)",
+          "Security and logging requirements",
+          "Training volume and change management"
+        ]
       },
       "enterprise": {
         "name": "Subscription / License",
@@ -1483,14 +1677,45 @@
           "Dedicated support contacts",
           "Custom integrations included"
         ],
-        "cta": "Contact us",
-        "popular": false
+        "cta": "Discuss support plan",
+        "popular": false,
+        "deliverables": [
+          "Weekly/bi-weekly development cycle",
+          "Prioritized backlog with alignment",
+          "SLA and incident response time",
+          "Monthly report: done, impact, blockers"
+        ],
+        "clientNeeds": "Typical range: from 20 hrs/month for maintaining 1–3 processes"
       }
     },
     "addOns": {
       "title": "Add-ons",
       "subtitle": "Enhance your plan with additional features",
       "addToPlan": "Add to Plan",
+      "whenLabel": "When you need it",
+      "effectLabel": "Effect",
+      "maturityStages": [
+        {
+          "title": "Infrastructure & Security",
+          "when": "On-prem requirements, audit logs, access control (RBAC/ABAC)",
+          "effect": "Reduced regulatory risk, compliance with security policies"
+        },
+        {
+          "title": "Data Quality & Governance",
+          "when": "Solution is bottlenecked by data quality or fragmentation",
+          "effect": "Higher model accuracy, reliable outputs"
+        },
+        {
+          "title": "Additional Integrations",
+          "when": "Need to connect ERP/CRM/BI or new data sources",
+          "effect": "Unified ecosystem without manual synchronization"
+        },
+        {
+          "title": "Training & Adoption",
+          "when": "Team is not ready to work with the new tool",
+          "effect": "High adoption rate, ROI without delays"
+        }
+      ],
       "analytics": {
         "name": "Advanced Analytics Package",
         "description": "Deep insights and custom reporting",
@@ -1569,18 +1794,85 @@
       },
       "items": [
         {
-          "question": "What's included in the free trial?",
-          "answer": "The free trial includes full access to our AI Starter plan for 14 days, including the AI readiness assessment and basic automation tools."
+          "question": "Can we start small to test the result?",
+          "answer": "Yes, that's exactly what the Pilot Mini-Project model is for, starting from RUB 50K. We select 1-2 processes with maximum ROI, build a prototype in 7-10 days, and launch a measurable pilot in 4-6 weeks. Only after confirmed results do we decide on scaling."
         },
         {
-          "question": "Can I upgrade or downgrade my plan?",
-          "answer": "Yes, you can change your plan at any time. Upgrades take effect immediately, while downgrades take effect at the next billing cycle."
+          "question": "What if the pilot doesn't deliver the promised result?",
+          "answer": "We only take on projects where we expect high and fast impact. KPIs and success criteria are fixed before kickoff. We're willing to include result guarantees in the contract — let's discuss at the discovery call."
         },
         {
-          "question": "Do you offer custom solutions?",
-          "answer": "Yes, our Enterprise plan includes custom AI development and solutions tailored to your specific business needs."
+          "question": "How quickly will we see first results?",
+          "answer": "Working prototype: 7-10 days. Pilot with measurable results: 4-6 weeks. Full-scale project: 1-3 months. Already at the discovery call stage we identify which process will deliver results fastest."
+        },
+        {
+          "question": "Do we need our own IT team to work with you?",
+          "answer": "No. We handle development, integration, and launch. We train your staff if needed. The architecture is modular — after implementation you can maintain the system yourself or under our SLA."
+        },
+        {
+          "question": "Do you lock us into your technology stack?",
+          "answer": "No vendor lock-in is our architecture principle. We use open-source components and an API-first approach. You can switch LLM providers, cloud infrastructure, or integrate with your CRM/ERP without rearchitecting the core system."
+        },
+        {
+          "question": "What happens on the first call?",
+          "answer": "30-45 minutes: we discuss your challenge, current load, KPIs and constraints. The outcome is a pilot proposal with specific scope, timeline and budget. No pressure, no sales pitch."
+        },
+        {
+          "question": "Do you work with companies in our industry?",
+          "answer": "Completed cases: aviation (B2B sales), direct sales/MLM, energy. Active discussions: manufacturing, security systems distribution, construction projects. If your industry isn't listed — tell us the challenge and we'll assess the potential."
+        },
+        {
+          "question": "Do you offer white-label or partnership formats?",
+          "answer": "Yes. For system integrators and consulting firms, white-label format is available — you sell the solution under your brand. We'll discuss partnership terms at a separate meeting."
+        },
+        {
+          "question": "What are typical project budgets?",
+          "answer": "Pilot mini-project: RUB 50K – 300K (4-6 weeks). Full-scale project: RUB 350K – 3.5M (1-4 months). Long-term support: custom. Final cost depends on complexity and scope — we'll discuss after analyzing your challenge."
+        },
+        {
+          "question": "What's included in post-launch support?",
+          "answer": "After a successful pilot we sign a support agreement: technical monitoring, updates, feature development. SLA and support scope are fixed in the contract. You're never left alone with a running system."
+        },
+        {
+          "question": "How is our company data secured?",
+          "answer": "Access-controlled architecture (RBAC/ABAC), data encryption in transit and at rest, audit logs, environment segregation. We work in compliance with applicable data protection regulations. NDA available upon request before negotiations begin."
         }
       ]
+    },
+    "roiSimple": {
+      "title": "Economic Justification",
+      "subtitle": "What counts as value and how we measure ROI in the pilot",
+      "items": [
+        {
+          "icon": "clock",
+          "label": "Time Savings",
+          "description": "Automating routine operations reduces staff costs and speeds up processes significantly"
+        },
+        {
+          "icon": "shield",
+          "label": "Error Reduction",
+          "description": "Fewer manual operations means fewer errors, rework, and incident losses"
+        },
+        {
+          "icon": "trending-up",
+          "label": "Service Speed",
+          "description": "Faster processing of requests and documents — NPS and revenue grow"
+        },
+        {
+          "icon": "users",
+          "label": "Team Load",
+          "description": "Employees focus on high-value tasks instead of routine work"
+        }
+      ],
+      "kpiNote": "KPIs and baseline are fixed before start. Go/no-go decision — based on pilot results.",
+      "ctaLabel": "Discuss your project's ROI"
+    },
+    "nav": {
+      "models": "Models",
+      "process": "Process",
+      "roi": "ROI",
+      "addons": "Add-ons",
+      "faq": "FAQ"
     },
     "finalCta": {
       "title": "Ready to Start?",
@@ -2687,4 +2979,3 @@
     "roi": "ROI"
   }
 }
-

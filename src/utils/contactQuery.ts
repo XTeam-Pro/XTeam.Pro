@@ -21,7 +21,10 @@ export type ContactSource =
   | 'pricing_addon'
   | 'pricing_final_cta'
   | 'pricing_brief'
+  | 'pricing_roi'
+  | 'about_hero'
   | 'about_cta'
+  | 'about_decision_kit'
   | 'case_study'
   | 'case_studies_final_cta'
   | 'blog_subscribe'
@@ -35,6 +38,7 @@ export interface ContactQueryParams {
   addon?: string;
   case?: string;
   model?: string;
+  ref?: string;
 }
 
 export const buildContactPath = (params: ContactQueryParams): string => {
@@ -55,6 +59,10 @@ export const buildContactPath = (params: ContactQueryParams): string => {
 
   if (params.model) {
     query.set('model', params.model);
+  }
+
+  if (params.ref) {
+    query.set('ref', params.ref);
   }
 
   return `/contact?${query.toString()}`;

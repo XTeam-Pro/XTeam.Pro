@@ -13,6 +13,7 @@ interface ContactRow {
   company: string;
   inquiry_type: string;
   subject: string;
+  source?: string | null;
   status: 'new' | 'contacted' | 'qualified' | 'converted' | 'closed';
   priority: 'low' | 'medium' | 'high' | 'urgent';
   created_at: string;
@@ -108,7 +109,12 @@ export default function AdminContacts() {
 
   const filtered = contacts.filter(c => {
     const q = search.toLowerCase();
-    const matchSearch = !q || c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q) || (c.company ?? '').toLowerCase().includes(q);
+    const matchSearch =
+      !q ||
+      c.name.toLowerCase().includes(q) ||
+      c.email.toLowerCase().includes(q) ||
+      (c.company ?? '').toLowerCase().includes(q) ||
+      (c.source ?? '').toLowerCase().includes(q);
     const matchPriority = priorityFilter === 'all' || c.priority === priorityFilter;
     return matchSearch && matchPriority;
   });
@@ -202,7 +208,7 @@ export default function AdminContacts() {
             <table className="w-full text-sm">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  {['Контакт', 'Компания', 'Тип', 'Приоритет', 'Статус', 'Дата', ''].map(h => (
+                  {['Контакт', 'Компания', 'Тип', 'Источник', 'Приоритет', 'Статус', 'Дата', ''].map(h => (
                     <th key={h} className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
                       {h}
                     </th>
@@ -221,6 +227,9 @@ export default function AdminContacts() {
                       <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                         {c.inquiry_type}
                       </span>
+                    </td>
+                    <td className="px-5 py-3.5 text-gray-500 text-xs max-w-44 truncate" title={c.source ?? '—'}>
+                      {c.source || '—'}
                     </td>
                     <td className="px-5 py-3.5">
                       <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${PRIORITY_COLORS[c.priority] ?? ''}`}>

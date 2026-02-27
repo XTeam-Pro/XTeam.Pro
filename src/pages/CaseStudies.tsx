@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Filter, Search, TrendingUp, Clock, Users, Zap } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { buildContactPath } from '@/utils/contactQuery';
 
 interface CaseStudy {
@@ -42,9 +42,11 @@ const STAT_COLORS = ['text-blue-600', 'text-green-600', 'text-purple-600', 'text
 
 export default function CaseStudies() {
   const { t } = useTranslation();
+  const location = useLocation();
   const ALL_INDUSTRIES = '__all_industries__';
   const [selectedIndustry, setSelectedIndustry] = useState<string>(ALL_INDUSTRIES);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const incomingSource = new URLSearchParams(location.search).get('source');
 
   const caseStudies: CaseStudy[] = [
     {
@@ -196,7 +198,7 @@ export default function CaseStudies() {
             transition={{ delay: 0.2 }}
             className="grid grid-cols-2 md:grid-cols-4 gap-6"
           >
-            {stats.map((stat, i) => (
+            {stats.map((stat) => (
               <div key={stat.key} className="bg-white rounded-2xl p-5 text-center shadow-sm">
                 <div className="flex justify-center mb-2">{stat.icon}</div>
                 <div className={`text-3xl font-bold ${stat.color} mb-1`}>
@@ -251,10 +253,11 @@ export default function CaseStudies() {
             {filteredStudies.map((study, index) => (
               <motion.div
                 key={study.id}
+                id={study.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 * index }}
-                className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow flex flex-col overflow-hidden"
+                className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow flex flex-col overflow-hidden scroll-mt-24"
               >
                 {/* Card top accent */}
                 <div className="h-1 bg-gradient-to-r from-blue-500 to-indigo-500" />
@@ -295,7 +298,11 @@ export default function CaseStudies() {
                       <span className="font-semibold text-gray-700">{study.roi}</span>
                     </div>
                     <Link
-                      to={buildContactPath({ source: 'case_study', case: study.id })}
+                      to={buildContactPath({
+                        source: 'case_study',
+                        case: study.id,
+                        ref: incomingSource ?? undefined
+                      })}
                       className="text-blue-600 hover:text-blue-700 font-medium text-xs flex items-center gap-1"
                     >
                       {t('caseStudies.viewDetails')}
@@ -323,7 +330,10 @@ export default function CaseStudies() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                to={buildContactPath({ source: 'case_studies_final_cta' })}
+                to={buildContactPath({
+                  source: 'case_studies_final_cta',
+                  ref: incomingSource ?? undefined
+                })}
                 className="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors inline-flex items-center justify-center"
               >
                 {t('caseStudies.cta.button')}

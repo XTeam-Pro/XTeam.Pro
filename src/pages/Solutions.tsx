@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
   ArrowRight,
@@ -61,6 +61,7 @@ const TRUST_ICONS = [
 
 export default function Solutions() {
   const { t } = useTranslation();
+  const location = useLocation();
   const [activeTrack, setActiveTrack] = useState<string>('all');
   const trackRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
@@ -263,6 +264,15 @@ export default function Solutions() {
     returnObjects: true,
   }) as { title: string; text: string }[];
 
+  const getStickyOffset = () => {
+    const headerHeight =
+      document.querySelector<HTMLElement>('[data-site-header]')?.getBoundingClientRect().height ?? 64;
+    const tabsHeight =
+      document.querySelector<HTMLElement>('[data-solutions-tabs]')?.getBoundingClientRect().height ?? 56;
+
+    return headerHeight + tabsHeight + 8;
+  };
+
   // IntersectionObserver — highlight active tab on scroll
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
@@ -285,6 +295,29 @@ export default function Solutions() {
     return () => observers.forEach((o) => o.disconnect());
   }, []);
 
+  useEffect(() => {
+    const hash = location.hash.replace('#', '');
+    if (!hash) return;
+
+    const scrollFromHash = () => {
+      const target = document.getElementById(decodeURIComponent(hash));
+      if (!target) return;
+
+      const offset = getStickyOffset();
+      const top = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+
+      const trackId = hash.startsWith('track-')
+        ? hash.replace('track-', '')
+        : TRACKS.find((track) => track.solutionIds.includes(hash))?.id;
+
+      if (trackId) setActiveTrack(trackId);
+    };
+
+    const frame = requestAnimationFrame(scrollFromHash);
+    return () => cancelAnimationFrame(frame);
+  }, [location.hash]);
+
   const scrollToTrack = (trackId: string) => {
     if (trackId === 'all') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -293,7 +326,7 @@ export default function Solutions() {
     }
     const el = trackRefs.current[trackId];
     if (el) {
-      const offset = 80; // height of sticky tabs + header
+      const offset = getStickyOffset();
       const top = el.getBoundingClientRect().top + window.scrollY - offset;
       window.scrollTo({ top, behavior: 'smooth' });
     }
@@ -310,18 +343,6 @@ export default function Solutions() {
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
             {t('solutions.hero.subtitle')}
           </p>
-          {/* Zone chips */}
-          <div className="flex flex-wrap justify-center gap-2 mb-10">
-            {TRACKS.map((track) => (
-              <button
-                key={track.id}
-                onClick={() => scrollToTrack(track.id)}
-                className="px-4 py-1.5 bg-white/70 border border-indigo-200 text-indigo-700 text-sm font-medium rounded-full hover:bg-white hover:border-indigo-400 transition-colors"
-              >
-                {t(`solutions.tracks.${track.id}.title`)}
-              </button>
-            ))}
-          </div>
           <Button asChild size="lg" className="text-lg px-8">
             <Link to={buildContactPath({ source: 'solutions_hero' })}>
               {t('solutions.hero.ctaButton')}
@@ -332,7 +353,10 @@ export default function Solutions() {
       </section>
 
       {/* Sticky filter tabs */}
-      <div className="sticky top-0 z-20 bg-white border-b shadow-sm">
+      <div
+        data-solutions-tabs
+        className="sticky top-[var(--site-header-height)] z-20 bg-white border-b shadow-sm"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex gap-2 overflow-x-auto py-3 scrollbar-hide">
             {FILTER_TABS.map((tab) => (
@@ -451,16 +475,16 @@ export default function Solutions() {
               {t('solutions.trust.subtitle')}
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 items-stretch">
             {Array.isArray(trustItems) &&
               trustItems.map((item, i) => (
                 <div
                   key={i}
-                  className="bg-white rounded-xl p-6 shadow-sm border border-gray-100"
+                  className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 h-full flex flex-col"
                 >
                   <div className="mb-3">{TRUST_ICONS[i]}</div>
                   <h3 className="font-semibold text-gray-900 mb-1">{item.title}</h3>
-                  <p className="text-sm text-gray-500">{item.text}</p>
+                  <p className="text-sm text-gray-500 flex-1">{item.text}</p>
                 </div>
               ))}
           </div>
