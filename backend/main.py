@@ -5,17 +5,22 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 import os
+import asyncio
 import logging
 from datetime import datetime
 
 # Import database
-from database.config import engine, get_async_db, init_db
+from database.config import async_engine, get_async_db, init_db, run_migrations_to_head
 
 # Import routes
 from routes.audit import router as audit_router
 from routes.contact import router as contact_router
 from routes.calculator import router as calculator_router
 from routes.admin import router as admin_router
+from routes.blog import router as blog_router
+from routes.cases import router as cases_router
+from routes.admin_cases import router as admin_cases_router
+from routes.admin_backups import router as admin_backups_router
 
 # Import services
 from services.auth_service import AuthService
@@ -43,6 +48,10 @@ async def lifespan(app: FastAPI):
     logger.info("Starting XTeam.Pro FastAPI application...")
     
     try:
+        # Apply all pending migrations before touching ORM models.
+        await asyncio.to_thread(run_migrations_to_head)
+        logger.info("Database migrations applied successfully")
+
         # Initialize database
         await init_db()
         logger.info("Database initialized successfully")
@@ -67,7 +76,7 @@ async def lifespan(app: FastAPI):
     # Shutdown
     logger.info("Shutting down XTeam.Pro FastAPI application...")
     try:
-        await engine.dispose()
+        await async_engine.dispose()
         logger.info("Database connections closed")
     except Exception as e:
         logger.error(f"Error during shutdown: {str(e)}")
@@ -195,7 +204,9 @@ async def api_info():
             "audit": "/api/audit",
             "contact": "/api/contact",
             "calculator": "/api/calculator",
-            "admin": "/api/admin"
+            "admin": "/api/admin",
+            "blog": "/api/blog",
+            "cases": "/api/cases",
         }
     }
 
@@ -224,6 +235,30 @@ app.include_router(
     tags=["Admin"]
 )
 
+app.include_router(
+    blog_router,
+    prefix="/api/blog",
+    tags=["Blog"]
+)
+
+app.include_router(
+    cases_router,
+    prefix="/api/cases",
+    tags=["Cases"]
+)
+
+app.include_router(
+    admin_cases_router,
+    prefix="/api/admin",
+    tags=["Admin Cases"]
+)
+
+app.include_router(
+    admin_backups_router,
+    prefix="/api/admin",
+    tags=["Admin Backups"]
+)
+
 # Mount static files (for serving PDF reports and uploads)
 if os.path.exists("reports"):
     app.mount("/reports", StaticFiles(directory="reports"), name="reports")
@@ -246,18 +281,6 @@ if DEBUG:
                 })
         return {"routes": routes}
     
-    @app.get("/api/debug/config")
-    async def debug_config():
-        """Show current configuration (debug only)"""
-        return {
-            "debug": DEBUG,
-            "environment": ENVIRONMENT,
-            "allowed_hosts": ALLOWED_HOSTS,
-            "cors_origins": CORS_ORIGINS,
-            "database_url": os.getenv("DATABASE_URL", "Not set").replace(
-                os.getenv("DB_PASSWORD", ""), "***"
-            ) if os.getenv("DATABASE_URL") else "Not set"
-        }
 
 if __name__ == "__main__":
     import uvicorn

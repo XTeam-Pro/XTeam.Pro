@@ -1,5 +1,6 @@
 import os
-import jwt
+import logging
+from jose import jwt, JWTError, ExpiredSignatureError
 from datetime import datetime, timedelta
 from typing import Optional, Dict, Any
 from passlib.context import CryptContext
@@ -10,10 +11,16 @@ from fastapi import HTTPException, status
 from database.config import get_async_db
 from models.admin import AdminUser
 
+logger = logging.getLogger(__name__)
+
 class AuthService:
     def __init__(self):
         self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-        self.secret_key = os.getenv("JWT_SECRET_KEY", "your-secret-key-change-in-production")
+        self.secret_key = os.getenv("JWT_SECRET_KEY") or os.getenv("SECRET_KEY")
+        if not self.secret_key:
+            raise RuntimeError(
+                "JWT_SECRET_KEY or SECRET_KEY environment variable is required and must not be empty"
+            )
         self.algorithm = "HS256"
         self.access_token_expire_minutes = int(os.getenv("JWT_ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
         self.refresh_token_expire_days = int(os.getenv("JWT_REFRESH_TOKEN_EXPIRE_DAYS", "7"))
@@ -35,6 +42,8 @@ class AuthService:
         Create JWT access token
         """
         to_encode = data.copy()
+        if "sub" in to_encode:
+            to_encode["sub"] = str(to_encode["sub"])
         if expires_delta:
             expire = datetime.utcnow() + expires_delta
         else:
@@ -49,6 +58,8 @@ class AuthService:
         Create JWT refresh token
         """
         to_encode = data.copy()
+        if "sub" in to_encode:
+            to_encode["sub"] = str(to_encode["sub"])
         expire = datetime.utcnow() + timedelta(days=self.refresh_token_expire_days)
         to_encode.update({"exp": expire, "type": "refresh"})
         encoded_jwt = jwt.encode(to_encode, self.secret_key, algorithm=self.algorithm)
@@ -70,12 +81,12 @@ class AuthService:
             
             return payload
             
-        except jwt.ExpiredSignatureError:
+        except ExpiredSignatureError:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Token has expired"
             )
-        except jwt.JWTError:
+        except JWTError:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Could not validate credentials"
@@ -110,7 +121,7 @@ class AuthService:
                 return user
                 
             except Exception as e:
-                print(f"Error authenticating user: {str(e)}")
+                logger.error(f"Error authenticating user: {str(e)}")
                 return None
             finally:
                 await db.close()
@@ -121,9 +132,10 @@ class AuthService:
         """
         async for db in get_async_db():
             try:
-                return await db.get(AdminUser, user_id)
+                user_db_id = int(user_id)
+                return await db.get(AdminUser, user_db_id)
             except Exception as e:
-                print(f"Error getting user by ID: {str(e)}")
+                logger.error(f"Error getting user by ID: {str(e)}")
                 return None
             finally:
                 await db.close()
@@ -138,7 +150,7 @@ class AuthService:
                 result = await db.execute(query)
                 return result.scalar_one_or_none()
             except Exception as e:
-                print(f"Error getting user by username: {str(e)}")
+                logger.error(f"Error getting user by username: {str(e)}")
                 return None
             finally:
                 await db.close()
@@ -192,7 +204,7 @@ class AuthService:
                 raise
             except Exception as e:
                 await db.rollback()
-                print(f"Error creating user: {str(e)}")
+                logger.error(f"Error creating user: {str(e)}")
                 raise HTTPException(
                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                     detail="Error creating user"
@@ -217,7 +229,7 @@ class AuthService:
                 
             except Exception as e:
                 await db.rollback()
-                print(f"Error updating password: {str(e)}")
+                logger.error(f"Error updating password: {str(e)}")
                 return False
             finally:
                 await db.close()
@@ -239,7 +251,7 @@ class AuthService:
                 
             except Exception as e:
                 await db.rollback()
-                print(f"Error deactivating user: {str(e)}")
+                logger.error(f"Error deactivating user: {str(e)}")
                 return False
             finally:
                 await db.close()
@@ -280,7 +292,7 @@ class AuthService:
         except HTTPException:
             raise
         except Exception as e:
-            print(f"Error refreshing token: {str(e)}")
+            logger.error(f"Error refreshing token: {str(e)}")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Could not refresh token"
@@ -315,32 +327,79 @@ class AuthService:
     
     async def initialize_default_admin(self):
         """
-        Initialize default admin user if none exists
+        Ensure a bootstrap super_admin account exists.
         """
         try:
             async for db in get_async_db():
-                # Check if any admin users exist
-                query = select(AdminUser).where(AdminUser.role == "admin")
-                result = await db.execute(query)
-                existing_admin = result.scalar_one_or_none()
-                
-                if not existing_admin:
-                    # Create default admin
-                    default_username = os.getenv("DEFAULT_ADMIN_USERNAME", "admin")
-                    default_password = os.getenv("DEFAULT_ADMIN_PASSWORD", "admin123")
-                    default_email = os.getenv("DEFAULT_ADMIN_EMAIL", "admin@xteam.pro")
-                    
-                    await self.create_user(
-                        username=default_username,
-                        email=default_email,
-                        password=default_password,
-                        full_name="System Administrator",
-                        role="admin"
-                    )
-                    
-                    print(f"Default admin user created: {default_username}")
-                
+                # If any super admin already exists, nothing to do.
+                super_admin_q = select(AdminUser).where(AdminUser.role == "super_admin")
+                existing_super_admin = (await db.execute(super_admin_q)).scalar_one_or_none()
+                if existing_super_admin:
+                    await db.close()
+                    return
+
+                default_username = os.getenv("DEFAULT_ADMIN_USERNAME", "admin")
+                default_password = os.getenv("DEFAULT_ADMIN_PASSWORD", "admin123")
+                default_email = os.getenv("DEFAULT_ADMIN_EMAIL", "admin@xteam.pro")
+
+                # Reuse existing default account if it exists, elevate to super_admin.
+                existing_default_q = select(AdminUser).where(
+                    (AdminUser.username == default_username) | (AdminUser.email == default_email)
+                )
+                existing_default = (await db.execute(existing_default_q)).scalar_one_or_none()
+
+                if existing_default:
+                    existing_default.role = "super_admin"
+                    existing_default.is_active = True
+                    existing_default.is_verified = True
+                    existing_default.can_manage_audits = True
+                    existing_default.can_manage_users = True
+                    existing_default.can_view_analytics = True
+                    existing_default.can_export_data = True
+                    existing_default.can_manage_content = True
+                    existing_default.can_read_audits = True
+                    existing_default.can_write_audits = True
+                    existing_default.can_delete_audits = True
+                    existing_default.can_read_contacts = True
+                    existing_default.can_write_contacts = True
+                    existing_default.can_delete_contacts = True
+                    existing_default.can_publish_content = True
+                    existing_default.can_manage_cases = True
+                    existing_default.skip_email_verification = True
+                    await db.commit()
+                    logger.info("Existing default account promoted to super_admin: %s", default_username)
+                    await db.close()
+                    return
+
+                # Create brand-new super_admin.
+                new_user = AdminUser(
+                    username=default_username,
+                    email=default_email,
+                    first_name="System",
+                    last_name="Administrator",
+                    hashed_password=self.get_password_hash(default_password),
+                    role="super_admin",
+                    is_active=True,
+                    is_verified=True,
+                    can_manage_audits=True,
+                    can_manage_users=True,
+                    can_view_analytics=True,
+                    can_export_data=True,
+                    can_manage_content=True,
+                    can_read_audits=True,
+                    can_write_audits=True,
+                    can_delete_audits=True,
+                    can_read_contacts=True,
+                    can_write_contacts=True,
+                    can_delete_contacts=True,
+                    can_publish_content=True,
+                    can_manage_cases=True,
+                    skip_email_verification=True,
+                )
+                db.add(new_user)
+                await db.commit()
+                logger.info("Bootstrap super_admin created: %s", default_username)
                 await db.close()
                 
         except Exception as e:
-            print(f"Error initializing default admin: {str(e)}")
+            logger.error(f"Error initializing default admin: {str(e)}")
