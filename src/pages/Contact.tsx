@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Mail, Phone, MapPin, Clock, Calendar, MessageSquare, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { apiCall } from '@/utils/api';
 
 interface ContactForm {
   name: string;
@@ -159,13 +160,13 @@ export default function Contact() {
     }
   ];
 
-  const inquiryTypes = [
+  const inquiryTypes = useMemo(() => [
     { value: 'consultation', label: t('contact.form.inquiryTypes.consultation') },
     { value: 'demo', label: t('contact.form.inquiryTypes.demo') },
     { value: 'partnership', label: t('contact.form.inquiryTypes.partnership') },
     { value: 'support', label: t('contact.form.inquiryTypes.support') },
     { value: 'other', label: t('contact.form.inquiryTypes.other') }
-  ];
+  ], [t]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -273,53 +274,27 @@ export default function Contact() {
     
     try {
       const transformedData = transformContactData(formData);
-      
-      const response = await fetch('/api/contact/contact-submit', {
+
+      const response = await apiCall('/api/contact/contact-submit', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(transformedData)
+        body: JSON.stringify(transformedData),
       });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setSubmitSuccess(data);
-        setIsSubmitted(true);
-        
-        // Reset form
-        setFormData(createInitialFormData());
-      } else {
-        const errorData = await response.json().catch(() => ({}));
-        
-        // Handle validation errors (422)
-        if (response.status === 422 && errorData.errors) {
-          setValidationErrors(errorData.errors);
-          setSubmitError(t('contact.form.submitErrors.validation'));
-        }
-        // Handle server errors (500+)
-        else if (response.status >= 500) {
-          setSubmitError(t('contact.form.submitErrors.server'));
-        }
-        // Handle other errors
-        else {
-          setSubmitError(errorData.error || errorData.message || t('contact.form.submitErrors.generic'));
-        }
-      }
+
+      const data: ContactResponse = await response.json();
+      setSubmitSuccess(data);
+      setIsSubmitted(true);
+
+      // Reset form
+      setFormData(createInitialFormData());
     } catch (error: unknown) {
       console.error('Error submitting contact form:', error);
 
-      const maybeError = error as { name?: string; message?: string; status?: number };
+      const maybeError = error as { name?: string; message?: string };
 
-      // Handle different types of errors
       if (maybeError.name === 'TypeError' && maybeError.message?.includes('fetch')) {
         setSubmitError(t('contact.form.submitErrors.network'));
-      } else if (maybeError.status === 422) {
-        setSubmitError(t('contact.form.submitErrors.validation'));
-      } else if (typeof maybeError.status === 'number' && maybeError.status >= 500) {
-        setSubmitError(t('contact.form.submitErrors.server'));
       } else {
-        setSubmitError(t('contact.form.submitErrors.unexpected'));
+        setSubmitError(maybeError.message || t('contact.form.submitErrors.unexpected'));
       }
     } finally {
       setIsSubmitting(false);

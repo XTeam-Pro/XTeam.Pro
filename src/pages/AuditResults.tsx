@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { API_BASE_URL } from '../utils/api';
+import { apiCallRaw, API_BASE_URL } from '../utils/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Download, TrendingUp, Target, Zap, AlertCircle, CheckCircle2,
@@ -75,19 +75,19 @@ const isAuditResultPayload = (value: unknown): value is AuditResult => {
   );
 };
 
-const PROCESSING_STEPS = [
-  { icon: Brain, label: 'Анализ бизнес-процессов', key: 'step1' },
-  { icon: BarChart2, label: 'Оценка потенциала автоматизации', key: 'step2' },
-  { icon: DollarSign, label: 'Расчёт ROI и экономии', key: 'step3' },
-  { icon: Lightbulb, label: 'Формирование рекомендаций', key: 'step4' },
-];
-
 const ROI_COLORS = ['#ef4444', '#10b981', '#3b82f6'];
 
 export default function AuditResults() {
   const { id } = useParams<{ id: string }>();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+
+  const PROCESSING_STEPS = useMemo(() => [
+    { icon: Brain, label: t('auditResults.processingSteps.step1'), key: 'step1' },
+    { icon: BarChart2, label: t('auditResults.processingSteps.step2'), key: 'step2' },
+    { icon: DollarSign, label: t('auditResults.processingSteps.step3'), key: 'step3' },
+    { icon: Lightbulb, label: t('auditResults.processingSteps.step4'), key: 'step4' },
+  ], [t]);
   const [result, setResult] = useState<AuditResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
@@ -98,7 +98,7 @@ export default function AuditResults() {
   const checkAuditStatus = useCallback(async (): Promise<AuditStatus | null> => {
     if (!id) return null;
     try {
-      const response = await fetch(`${API_BASE_URL}/api/audit/status/${id}`);
+      const response = await apiCallRaw(`/api/audit/status/${id}`, {});
       if (response.ok) {
         const status = await response.json();
         return status as AuditStatus;
@@ -112,7 +112,7 @@ export default function AuditResults() {
 
   const fetchResults = useCallback(async (): Promise<'completed' | 'processing'> => {
     if (!id) throw new Error('Missing audit identifier');
-    const response = await fetch(`${API_BASE_URL}/api/audit/results/${id}`);
+    const response = await apiCallRaw(`/api/audit/results/${id}`, {});
     if (response.status === 202) {
       setProcessing(true);
       setLoading(false);
@@ -124,7 +124,7 @@ export default function AuditResults() {
       setResult(data);
       setProcessing(false);
       setLoading(false);
-      toast.success('Результаты аудита готовы!');
+      toast.success(t('auditResults.readyToast'));
       return 'completed';
     }
     throw new Error(`Failed to fetch audit results (${response.status})`);
@@ -324,7 +324,7 @@ export default function AuditResults() {
       net: -(result.implementation_cost || 0),
     },
     {
-      name: `После ${result.payback_period || 12} мес.`,
+      name: `${result.payback_period || 12} ${t('auditResults.months')}`,
       cost: result.implementation_cost || 0,
       savings: result.estimated_savings || 0,
       net: (result.estimated_savings || 0) - (result.implementation_cost || 0),
@@ -360,7 +360,7 @@ export default function AuditResults() {
         >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mb-4">
             <CheckCircle2 className="w-4 h-4" />
-            Аудит завершён · {new Date(result.created_at).toLocaleDateString('ru-RU')}
+            {t('auditResults.completedBadge')} · {new Date(result.created_at).toLocaleDateString(i18n.resolvedLanguage === 'ru' ? 'ru-RU' : 'en-US')}
           </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-3">
             {result.company_name}
@@ -421,7 +421,7 @@ export default function AuditResults() {
               },
               {
                 icon: Calendar, color: 'text-purple-600', bg: 'bg-purple-50',
-                value: result.payback_period ? `${result.payback_period} мес.` : '—',
+                value: result.payback_period ? `${result.payback_period} ${t('auditResults.months')}` : '—',
                 label: t('auditResults.metrics.paybackPeriod'),
               },
               {

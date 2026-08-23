@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -65,7 +65,7 @@ export default function Solutions() {
   const [activeTrack, setActiveTrack] = useState<string>('all');
   const trackRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  const solutions: Solution[] = [
+  const solutions: Solution[] = useMemo(() => [
     {
       id: 'automation',
       pain: t('solutions.blocks.automation.pain'),
@@ -256,7 +256,7 @@ export default function Solutions() {
       cta: t('solutions.blocks.aigovernance.cta'),
       ctaSource: 'solutions_aigovernance',
     },
-  ];
+  ], [t]);
 
   const solutionMap = Object.fromEntries(solutions.map((s) => [s.id, s]));
 

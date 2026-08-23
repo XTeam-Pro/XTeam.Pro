@@ -20,7 +20,9 @@
       "Bash(curl -s \"http://localhost:8000/api/blog/?lang=ru&limit=10\")",
       "Bash(curl -sv \"http://localhost:8000/api/blog?lang=ru&limit=5\")",
       "Bash(curl -s \"http://localhost:8000/api/blog/posts?lang=ru&limit=5\")",
-      "Bash(grep -E \"Previous|Next|All statuses|All Stages|All Priorities|All Types|All Industries|General|Consultation|Support|Partnership|Send Profile|Add User|Add Task|Compose Email|Call|Refresh|Details|Type|Open|Users & Roles|Add|Create Template|Edit Template|Contacts Kanban|Drag cards\" src/pages/admin/*.tsx src/components/admin/*.tsx)"
+      "Bash(grep -E \"Previous|Next|All statuses|All Stages|All Priorities|All Types|All Industries|General|Consultation|Support|Partnership|Send Profile|Add User|Add Task|Compose Email|Call|Refresh|Details|Type|Open|Users & Roles|Add|Create Template|Edit Template|Contacts Kanban|Drag cards\" src/pages/admin/*.tsx src/components/admin/*.tsx)",
+      "Bash(./venv/Scripts/python.exe run_alembic.py revision --autogenerate -m \"add_indexes_for_filtering\")",
+      "Bash(./venv/Scripts/python.exe run_alembic.py upgrade head)"
     ]
   }
 }

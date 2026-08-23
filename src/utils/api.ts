@@ -84,4 +84,10 @@ export const apiCall = async (endpoint: string, options: RequestInit = {}): Prom
   return response;
 };
 
+/**
+ * Raw fetch wrapper — applies default headers but does NOT throw on non-OK responses.
+ * Use when you need to inspect the status code yourself (e.g., 202 Accepted for polling).
+ */
+export const apiCallRaw = _rawFetch;
+
 export { API_BASE_URL };

@@ -733,7 +733,25 @@
     },
     "messages": {
       "priorityAreasAvailable": "Priority areas will be available after analysis completion"
-    }
+    },
+    "processingSteps": {
+      "step1": "Business Process Analysis",
+      "step2": "Automation Potential Assessment",
+      "step3": "ROI and Savings Calculation",
+      "step4": "Recommendations Generation"
+    },
+    "completedBadge": "Audit complete",
+    "readyToast": "Audit results are ready!",
+    "months": "mo."
+  },
+  "adminLogin": {
+    "panelSubtitle": "Control Panel",
+    "usernameLabel": "Login or Email",
+    "passwordLabel": "Password",
+    "submitButton": "Sign In",
+    "loadingButton": "Signing in...",
+    "defaultError": "Invalid login or password",
+    "loginError": "Login error"
   },
   "about": {
     "hero": {

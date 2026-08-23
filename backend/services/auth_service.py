@@ -339,8 +339,16 @@ class AuthService:
                     return
 
                 default_username = os.getenv("DEFAULT_ADMIN_USERNAME", "admin")
-                default_password = os.getenv("DEFAULT_ADMIN_PASSWORD", "admin123")
+                default_password = os.getenv("DEFAULT_ADMIN_PASSWORD")
                 default_email = os.getenv("DEFAULT_ADMIN_EMAIL", "admin@xteam.pro")
+
+                if not default_password:
+                    logger.warning(
+                        "DEFAULT_ADMIN_PASSWORD is not set; skipping super-admin bootstrap. "
+                        "Set this env variable to create the initial admin account."
+                    )
+                    await db.close()
+                    return
 
                 # Reuse existing default account if it exists, elevate to super_admin.
                 existing_default_q = select(AdminUser).where(

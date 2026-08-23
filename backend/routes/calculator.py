@@ -100,22 +100,33 @@ async def calculate_roi(roi_request: ROICalculationRequest):
             roi_request.budget_range, 100000
         )
         
-        # Adjust investment based on technical complexity
-        complexity_multiplier = 1 + (roi_request.technical_complexity - 5) * 0.1
+        # Adjust investment based on technical complexity.
+        # Each point above midpoint (5) adds 10% to base investment.
+        # e.g. complexity 8 → multiplier 1.30; complexity 3 → multiplier 0.80
+        COMPLEXITY_MIDPOINT = 5
+        COMPLEXITY_STEP = 0.10
+        complexity_multiplier = 1 + (roi_request.technical_complexity - COMPLEXITY_MIDPOINT) * COMPLEXITY_STEP
         initial_investment *= complexity_multiplier
-        
+
         # Calculate annual savings
-        avg_employee_cost = 75000  # Average annual employee cost
+        avg_employee_cost = 75000  # Average annual employee cost in USD (industry benchmark)
         efficiency_factor = roi_request.expected_efficiency_gain / 100
-        
+
+        # Fraction of per-employee annual cost attributable to automatable process work
+        PROCESS_SAVINGS_LABOR_FACTOR = 0.30
+        # Error-related cost as a fraction of annual revenue (industry average estimate)
+        REVENUE_ERROR_REDUCTION_RATE = 0.02
+        # Fraction of per-employee annual cost recovered via time savings
+        EMPLOYEE_TIME_SAVINGS_FACTOR = 0.15
+
         # Process-based savings calculation
-        process_savings = len(roi_request.processes_to_automate) * avg_employee_cost * efficiency_factor * 0.3
-        
+        process_savings = len(roi_request.processes_to_automate) * avg_employee_cost * efficiency_factor * PROCESS_SAVINGS_LABOR_FACTOR
+
         # Error reduction savings
-        error_reduction_savings = roi_request.annual_revenue * 0.02 * efficiency_factor
-        
+        error_reduction_savings = roi_request.annual_revenue * REVENUE_ERROR_REDUCTION_RATE * efficiency_factor
+
         # Time savings
-        time_savings = roi_request.employee_count * avg_employee_cost * efficiency_factor * 0.15
+        time_savings = roi_request.employee_count * avg_employee_cost * efficiency_factor * EMPLOYEE_TIME_SAVINGS_FACTOR
         
         annual_savings = process_savings + error_reduction_savings + time_savings
         
@@ -164,9 +175,11 @@ async def calculate_roi(roi_request: ROICalculationRequest):
         }
         
         # Yearly projections
+        # Year-over-year organic savings growth assumption
+        ANNUAL_SAVINGS_GROWTH_RATE = 0.05
         yearly_projections = []
         for year in range(1, 4):
-            growth_factor = 1 + (0.05 * year)  # 5% annual growth
+            growth_factor = 1 + (ANNUAL_SAVINGS_GROWTH_RATE * year)
             yearly_projections.append({
                 "year": year,
                 "savings": annual_savings * growth_factor,

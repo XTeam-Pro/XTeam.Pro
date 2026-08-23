@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, BigInteger, DateTime, Boolean, Text
+from sqlalchemy import Column, Integer, String, BigInteger, DateTime, Boolean, Text, JSON
 from sqlalchemy.sql import func
 from database.config import Base
 
@@ -24,7 +24,7 @@ class MediaFile(Base):
 
     # Organisation
     folder = Column(String(255), default="uploads")
-    tags = Column(String(500), nullable=True)
+    tags = Column(JSON, nullable=True)  # list of tag strings
     title = Column(String(255), nullable=True)
     description = Column(Text, nullable=True)
 

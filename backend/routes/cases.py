@@ -4,15 +4,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.config import get_async_db
 from models.case_study import CaseStudy
+from utils.localization import localized as _localized
 
 router = APIRouter(tags=["cases"])
-
-
-def _localized(case: CaseStudy, base: str, lang: str) -> str:
-    localized = getattr(case, f"{base}_{lang}", None)
-    alt_lang = "en" if lang == "ru" else "ru"
-    localized_alt = getattr(case, f"{base}_{alt_lang}", None)
-    return (localized or localized_alt or "").strip()
 
 
 def _localized_metrics(raw_results: list, lang: str) -> list:

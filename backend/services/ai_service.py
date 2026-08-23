@@ -11,14 +11,22 @@ from sqlalchemy import select
 from database.config import get_async_db
 from models.audit import Audit, AuditResult
 from models.admin import AuditConfiguration
+from models.enums import AuditStatus
 
 logger = logging.getLogger(__name__)
 
 class AIService:
     def __init__(self):
         api_key = os.getenv("OPENAI_API_KEY")
-        # Check if we're in mock mode (development with placeholder key)
-        self.mock_mode = api_key == "your-openai-api-key-here" or not api_key
+        # Check if we're in mock mode:
+        # - Explicit env override (OPENAI_MOCK_MODE=true)
+        # - No API key provided
+        # - Placeholder key from .env.example left unchanged
+        self.mock_mode = (
+            os.getenv("OPENAI_MOCK_MODE", "").lower() in ("1", "true", "yes")
+            or not api_key
+            or api_key == "your-openai-api-key-here"
+        )
         
         if not self.mock_mode:
             self.client = openai.AsyncOpenAI(api_key=api_key)
@@ -30,7 +38,7 @@ class AIService:
         """
         Get active audit configuration
         """
-        query = select(AuditConfiguration).where(AuditConfiguration.is_active == True)
+        query = select(AuditConfiguration).where(AuditConfiguration.is_active.is_(True))
         result = await db.execute(query)
         return result.scalar_one_or_none()
 
@@ -78,7 +86,7 @@ class AIService:
                 # Update audit status
                 audit = await db.get(Audit, audit_db_id)
                 if audit:
-                    audit.status = "processing"
+                    audit.status = AuditStatus.PROCESSING
                     await db.commit()
                 
                 # Perform AI analysis
@@ -109,7 +117,7 @@ class AIService:
                 
                 # Update audit status
                 if audit:
-                    audit.status = "completed"
+                    audit.status = AuditStatus.COMPLETED
                 
                 await db.commit()
                 
@@ -125,7 +133,7 @@ class AIService:
                 try:
                     audit = await db.get(Audit, audit_db_id)
                     if audit:
-                        audit.status = "failed"
+                        audit.status = AuditStatus.FAILED
                         await db.commit()
                 except Exception:
                     logger.exception("Failed to update audit %s status to failed", str(audit_id))

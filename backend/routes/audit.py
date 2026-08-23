@@ -7,6 +7,7 @@ from datetime import datetime
 
 from database.config import get_db, get_async_db
 from models.audit import Audit, AuditResult, PDFReport
+from models.enums import AuditStatus
 from services.ai_service import AIService
 from services.pdf_service import PDFService
 
@@ -84,7 +85,7 @@ async def submit_audit(
             contact_email=audit_data.contact_email,
             contact_name=audit_data.contact_name,
             phone=audit_data.contact_phone,
-            status="processing"
+            status=AuditStatus.PROCESSING
         )
         
         db.add(audit)
@@ -100,7 +101,7 @@ async def submit_audit(
         
         return AuditResponse(
             audit_id=audit_id,
-            status="processing",
+            status=AuditStatus.PROCESSING,
             message="Audit submitted successfully. AI analysis in progress.",
             estimated_completion=datetime.utcnow().replace(microsecond=0)
         )
@@ -136,7 +137,7 @@ async def get_audit_results(
         result_rows = await db.execute(result_query)
         audit_result = result_rows.scalar_one_or_none()
         if not audit_result:
-            if audit.status == "processing":
+            if audit.status == AuditStatus.PROCESSING:
                 raise HTTPException(
                     status_code=status.HTTP_202_ACCEPTED,
                     detail="Audit is still processing. Please try again later."

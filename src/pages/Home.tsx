@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -28,7 +28,7 @@ export default function Home() {
   const { t } = useTranslation();
 
   // ─── Pain points ─────────────────────────────────────────────────────────
-  const painPoints = [
+  const painPoints = useMemo(() => [
     {
       icon: <AlertTriangle className="h-7 w-7 text-orange-500" />,
       title: t('home.features.aiAudit.title'),
@@ -49,10 +49,10 @@ export default function Home() {
       title: t('home.features.scalableGrowth.title'),
       description: t('home.features.scalableGrowth.description'),
     },
-  ];
+  ], [t]);
 
   // ─── Proof strip stats ───────────────────────────────────────────────────
-  const stats = [
+  const stats = useMemo(() => [
     {
       number: t('home.stats.stat1Number'),
       label: t('home.stats.stat1Label'),
@@ -73,10 +73,10 @@ export default function Home() {
       label: t('home.stats.stat4Label'),
       context: t('home.stats.stat4Context'),
     },
-  ];
+  ], [t]);
 
   // ─── Role-based routing tiles ────────────────────────────────────────────
-  const routingTiles = [
+  const routingTiles = useMemo(() => [
     {
       icon: <HeadphonesIcon className="h-6 w-6" />,
       title: t('home.routing.tile1Title'),
@@ -113,10 +113,10 @@ export default function Home() {
       desc: t('home.routing.tile6Desc'),
       anchor: 'aiops',
     },
-  ];
+  ], [t]);
 
   // ─── Pilot steps ─────────────────────────────────────────────────────────
-  const pilotSteps = [
+  const pilotSteps = useMemo(() => [
     {
       icon: <ClipboardList className="h-6 w-6 text-primary" />,
       title: t('home.pilot.step1Title'),
@@ -141,10 +141,10 @@ export default function Home() {
       desc: t('home.pilot.step4Desc'),
       step: '04',
     },
-  ];
+  ], [t]);
 
   // ─── Case studies ────────────────────────────────────────────────────────
-  const cases = [
+  const cases = useMemo(() => [
     {
       title: t('home.cases.case1Title'),
       process: t('home.cases.case1Process'),
@@ -166,7 +166,7 @@ export default function Home() {
       period: t('home.cases.case3Period'),
       stack: t('home.cases.case3Stack'),
     },
-  ];
+  ], [t]);
 
   return (
     <div className="min-h-screen">

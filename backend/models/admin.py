@@ -16,7 +16,7 @@ class AdminUser(Base):
     # Profile information
     first_name = Column(String(100), nullable=False)
     last_name = Column(String(100), nullable=False)
-    role = Column(String(50), default="admin")  # super_admin, admin, analyst, editor, author, moderator
+    role = Column(String(50), default="admin", index=True)  # super_admin, admin, analyst, editor, author, moderator
     
     # Permissions
     can_manage_audits = Column(Boolean, default=True)
@@ -35,7 +35,7 @@ class AdminUser(Base):
     skip_email_verification = Column(Boolean, default=False)
     
     # Status
-    is_active = Column(Boolean, default=True)
+    is_active = Column(Boolean, default=True, index=True)
     is_verified = Column(Boolean, default=False)
     last_login = Column(DateTime(timezone=True), nullable=True)
     

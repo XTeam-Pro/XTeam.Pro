@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAdminStore } from '@/store/adminStore';
 import { apiCall } from '@/utils/api';
 
 export default function AdminLogin() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const setAuth = useAdminStore(state => state.setAuth);
   const authToken = useAdminStore(state => state.authToken);
@@ -29,7 +31,7 @@ export default function AdminLogin() {
       });
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.detail || 'Ошибка входа');
+        throw new Error(data.detail || t('adminLogin.loginError'));
       }
       const token: string = data.access_token;
       const refreshToken: string = data.refresh_token ?? '';
@@ -37,7 +39,7 @@ export default function AdminLogin() {
       setAuth(token, refreshToken, user);
       navigate('/admin/dashboard', { replace: true });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Неверный логин или пароль');
+      setError(err instanceof Error ? err.message : t('adminLogin.defaultError'));
     } finally {
       setLoading(false);
     }
@@ -51,7 +53,7 @@ export default function AdminLogin() {
           <h1 className="text-3xl font-extrabold text-white">
             XTeam<span className="text-blue-400">.Pro</span>
           </h1>
-          <p className="mt-2 text-gray-400 text-sm">Панель управления</p>
+          <p className="mt-2 text-gray-400 text-sm">{t('adminLogin.panelSubtitle')}</p>
         </div>
 
         {/* Card */}
@@ -61,7 +63,7 @@ export default function AdminLogin() {
         >
           <div>
             <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1.5">
-              Логин или Email
+              {t('adminLogin.usernameLabel')}
             </label>
             <input
               id="username"
@@ -78,7 +80,7 @@ export default function AdminLogin() {
 
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1.5">
-              Пароль
+              {t('adminLogin.passwordLabel')}
             </label>
             <input
               id="password"
@@ -106,10 +108,10 @@ export default function AdminLogin() {
             {loading ? (
               <span className="flex items-center justify-center gap-2">
                 <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                Вход…
+                {t('adminLogin.loadingButton')}
               </span>
             ) : (
-              'Войти'
+              t('adminLogin.submitButton')
             )}
           </button>
         </form>

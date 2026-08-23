@@ -740,7 +740,25 @@
     },
     "messages": {
       "priorityAreasAvailable": "Приоритетные области будут доступны после завершения анализа."
-    }
+    },
+    "processingSteps": {
+      "step1": "Анализ бизнес-процессов",
+      "step2": "Оценка потенциала автоматизации",
+      "step3": "Расчёт ROI и экономии",
+      "step4": "Формирование рекомендаций"
+    },
+    "completedBadge": "Аудит завершён",
+    "readyToast": "Результаты аудита готовы!",
+    "months": "мес."
+  },
+  "adminLogin": {
+    "panelSubtitle": "Панель управления",
+    "usernameLabel": "Логин или Email",
+    "passwordLabel": "Пароль",
+    "submitButton": "Войти",
+    "loadingButton": "Вход…",
+    "defaultError": "Неверный логин или пароль",
+    "loginError": "Ошибка входа"
   },
   "about": {
     "hero": {

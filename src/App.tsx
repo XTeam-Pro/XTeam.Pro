@@ -4,6 +4,7 @@ import Layout from '@/components/layout/Layout';
 import ProtectedRoute from '@/components/admin/ProtectedRoute';
 import AdminLayout from '@/components/admin/AdminLayout';
 import ScrollToTop from '@/components/layout/ScrollToTop';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 // Public pages
 const Home        = lazy(() => import('@/pages/Home'));
@@ -50,6 +51,7 @@ export default function App() {
   return (
     <Router>
       <ScrollToTop />
+      <ErrorBoundary>
       <Suspense fallback={<Spinner />}>
         <Routes>
           {/* ── Public routes — with Header + Footer ── */}
@@ -105,6 +107,7 @@ export default function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
+      </ErrorBoundary>
     </Router>
   );
 }

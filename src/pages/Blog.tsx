@@ -4,6 +4,7 @@ import { Search, Calendar, ArrowRight, Clock, TrendingUp, BookOpen } from 'lucid
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { buildContactPath } from '@/utils/contactQuery';
+import { apiCall } from '@/utils/api';
 
 interface ApiPost {
   id: number;
@@ -32,6 +33,12 @@ interface Category {
   count: number;
 }
 
+interface ApiCategory {
+  id: string;
+  name: string;
+  count: number;
+}
+
 export default function Blog() {
   const { t, i18n } = useTranslation();
   const lang = (i18n.resolvedLanguage || i18n.language || 'en').startsWith('ru') ? 'ru' : 'en';
@@ -53,8 +60,7 @@ export default function Blog() {
       if (searchTerm) params.set('search', searchTerm);
       if (selectedCategory) params.set('category', selectedCategory);
 
-      const res = await fetch(`/api/blog?${params}`);
-      if (!res.ok) throw new Error('Failed');
+      const res = await apiCall(`/api/blog?${params}`);
       const data: ApiListResponse = await res.json();
 
       let items = data.items;
@@ -74,11 +80,10 @@ export default function Blog() {
 
   const fetchCategories = useCallback(async () => {
     try {
-      const res = await fetch('/api/blog/categories');
-      if (!res.ok) return;
+      const res = await apiCall('/api/blog/categories');
       const data = await res.json();
       const all: Category = { id: '', name: t('blog.categories.all'), count: data.total };
-      setCategories([all, ...data.categories.map((c: any) => ({ id: c.id, name: c.name, count: c.count }))]);
+      setCategories([all, ...data.categories.map((c: ApiCategory) => ({ id: c.id, name: c.name, count: c.count }))]);
     } catch {
       setCategories([{ id: '', name: t('blog.categories.all'), count: 0 }]);
     }

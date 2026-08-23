@@ -18,7 +18,7 @@ class ContactInquiry(Base):
     # Inquiry details
     subject = Column(String(255), nullable=False)
     message = Column(Text, nullable=False)
-    inquiry_type = Column(String(50), nullable=False)  # consultation, support, partnership, other
+    inquiry_type = Column(String(50), nullable=False, index=True)  # consultation, support, partnership, other
     
     # Preferences
     preferred_contact_method = Column(String(50), default="email")  # email, phone, both
@@ -29,7 +29,7 @@ class ContactInquiry(Base):
     status = Column(String(50), default="new")  # new, contacted, qualified, converted, closed
     priority = Column(String(20), default="medium")  # low, medium, high, urgent
     assigned_to = Column(String(255), nullable=True)  # Staff member assigned
-    tags = Column(String(500), nullable=True)  # comma separated
+    tags = Column(JSON, nullable=True)  # list of tag strings
     score = Column(Integer, default=0)
     pipeline_stage = Column(String(50), default="new")  # new, contacted, qualified, converted, closed
     

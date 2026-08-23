@@ -4,16 +4,9 @@ from sqlalchemy import select, func, and_, or_
 
 from database.config import get_async_db
 from models.blog import BlogPost
+from utils.localization import localized as _localized
 
 router = APIRouter(tags=["blog"])
-
-
-def _localized(post: BlogPost, base: str, lang: str) -> str:
-    localized = getattr(post, f"{base}_{lang}", None)
-    alt_lang = "en" if lang == "ru" else "ru"
-    localized_alt = getattr(post, f"{base}_{alt_lang}", None)
-    legacy = getattr(post, base, None)
-    return (localized or localized_alt or legacy or "").strip()
 
 
 @router.get("")
@@ -50,8 +43,10 @@ async def list_published_posts(
     if conditions:
         query = query.where(and_(*conditions))
 
-    total_q = select(func.count()).select_from(query.subquery())
-    total = await db.scalar(total_q)
+    count_q = select(func.count(BlogPost.id)).where(BlogPost.status == "published")
+    if conditions:
+        count_q = count_q.where(and_(*conditions))
+    total = await db.scalar(count_q)
 
     rows = await db.execute(
         query.order_by(BlogPost.published_at.desc()).offset(skip).limit(limit)
