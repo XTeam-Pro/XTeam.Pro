@@ -26,7 +26,19 @@ env/
 backend/venv/
 backend/.venv*/
 backend/test_xteam_pro.db
+*.db
+backend/*.db
 output/
+
+# Deploy / IDE / assistant metadata
+.vercel/
+.claude/
+.codex/
+.trae/
+
+# Generated reports (may contain business data)
+reports/
+backend/reports/
 
 # Editor directories and files
 .vscode/*
