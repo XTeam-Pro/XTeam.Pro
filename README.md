@@ -58,4 +58,4 @@ export default tseslint.config({
 
 ## License
 
-Proprietary. © 2026 XTeam.Pro. All rights reserved. See [LICENSE](LICENSE).
+Dual-licensed: **AGPL-3.0** (see [LICENSE](LICENSE)) or a **commercial license** (see [COMMERCIAL_LICENSE.md](COMMERCIAL_LICENSE.md) / [LICENSING.md](LICENSING.md)). Commercial licensing: andrew@xteam.pro
